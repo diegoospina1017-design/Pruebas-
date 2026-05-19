@@ -81,15 +81,93 @@
   .typePill span { padding: 3px 8px; font-weight: 500; color: var(--fg-strong); }
   .typePill select { border: none; border-left: 1px solid var(--border); padding: 2px 4px; font-size: 11px; border-radius: 0 var(--radius) var(--radius) 0; background: var(--bg-soft); }
 
-  .resultCard { background: white; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; box-shadow: var(--shadow); }
-  .resultCard header { display: flex; align-items: center; gap: 12px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
-  .resultCard header h3 { margin: 0; font-size: 14px; color: var(--fg-strong); flex: 1; }
+  .resultCard {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin: 0 auto 18px;
+    max-width: 1100px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .resultCard header {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 22px;
+    cursor: pointer;
+    background: linear-gradient(180deg, #fafbfd 0%, #f1f5f9 100%);
+    border-bottom: 1px solid var(--border);
+  }
+  .resultCard header h3 { margin: 0; font-size: 16px; color: var(--fg-strong); flex: 1; letter-spacing: -.01em; }
   .resultCard header small { color: var(--fg-muted); }
-  .kind { background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
-  .resultCard .body { padding: 12px 14px; }
+  .resultCard.collapsed header { border-bottom: none; }
+
+  .kind {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 3px 10px; border-radius: 12px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .05em;
+  }
+  .resultCard .body { padding: 22px 28px; background: white; }
   .resultCard.collapsed .body { display: none; }
-  .summary { background: var(--bg-soft); border-left: 4px solid var(--accent); padding: 8px 12px; margin: 0 0 10px; border-radius: 4px; }
-  .chart { border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; margin: 12px 0; background: white; }
+
+  .summary {
+    background: var(--bg-soft);
+    border-left: 4px solid var(--accent);
+    padding: 10px 14px;
+    margin: 0 0 22px;
+    border-radius: 4px;
+    font-size: 14px;
+    color: var(--fg-strong);
+  }
+
+  .reportSection { margin: 0 0 26px; }
+  .reportSection:last-child { margin-bottom: 0; }
+  .reportSection .sectionTitle {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 0 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .reportSection .sectionTitle strong {
+    font-size: 13px;
+    color: var(--fg-strong);
+    text-transform: uppercase;
+    letter-spacing: .06em;
+  }
+  .reportSection .sectionTitle button {
+    font-size: 12px; padding: 3px 10px;
+  }
+  .tableScroll {
+    max-height: 360px; overflow: auto;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+
+  .chart {
+    width: 100%;
+    margin: 0 0 22px;
+    padding: 14px 16px 8px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgba(16, 42, 67, .04);
+    break-inside: avoid;
+  }
+  .chart .chartHeader {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px; margin-bottom: 8px;
+  }
+  .chart .chartHeader strong { color: var(--fg-strong); font-size: 14px; }
+  .chart .chartHeader button { font-size: 12px; padding: 3px 10px; }
+  .chart .plotBox {
+    width: 100%;
+    min-height: 380px;
+    height: clamp(360px, 42vh, 520px);
+  }
+  .resultFooter {
+    display: flex; gap: 8px; flex-wrap: wrap;
+    border-top: 1px solid var(--border);
+    padding-top: 14px; margin-top: 18px;
+  }
 
   .modalBackdrop { position: fixed; inset: 0; background: rgba(16,42,67,.5); z-index: 100; display: none; align-items: center; justify-content: center; }
   .modalBackdrop.open { display: flex; }
@@ -121,7 +199,13 @@
   .dashTile header button.close { background: transparent; border: none; font-size: 16px; }
   .dashTile .tileBody { padding: 8px; min-height: 220px; }
 
-  @media print { .no-print, .no-print * { display: none !important; } body { background: white; } }
+  @media print {
+    .no-print, .no-print * { display: none !important; }
+    body { background: white; }
+    .resultCard { box-shadow: none; border-color: #cbd2d9; page-break-inside: avoid; }
+    .chart { box-shadow: none; page-break-inside: avoid; }
+    .resultCard.collapsed .body { display: block !important; }
+  }
 </style>
 </head>
 <body>
@@ -947,28 +1031,36 @@ function renderResults() {
       </header>
       <div class="body">
         <p class="summary">${escapeHtml(r.summary)}</p>
-        ${r.tables.map(t => `
-          <div style="margin: 10px 0;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong>${escapeHtml(t.title)}</strong>
-              <button data-export-table="${r.id}|${t.id}">CSV</button>
-            </div>
-            <div style="max-height: 320px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-top: 4px;">
-              <table>
-                <thead><tr>${t.columns.map(c => `<th>${escapeHtml(String(c))}</th>`).join('')}</tr></thead>
-                <tbody>${t.rows.map(row => `<tr>${row.map(c => `<td>${c === null || c === undefined ? '' : escapeHtml(String(c))}</td>`).join('')}</tr>`).join('')}</tbody>
-              </table>
-            </div>
-          </div>`).join('')}
-        ${r.charts.map(c => `
-          <div class="chart">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-              <strong>${escapeHtml(c.title)}</strong>
-              <button data-add-dash="${r.id}|${c.id}">Añadir al dashboard</button>
-            </div>
-            <div data-plot="${r.id}_${c.id}" style="height: 320px;"></div>
-          </div>`).join('')}
-        <div style="display: flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 12px; flex-wrap: wrap;">
+        ${r.tables.length ? `
+          <div class="reportSection">
+            <div class="sectionTitle"><strong>Tablas</strong></div>
+            ${r.tables.map(t => `
+              <div style="margin: 14px 0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                  <strong style="font-size:13px; color:var(--fg-strong);">${escapeHtml(t.title)}</strong>
+                  <button data-export-table="${r.id}|${t.id}">CSV</button>
+                </div>
+                <div class="tableScroll">
+                  <table>
+                    <thead><tr>${t.columns.map(c => `<th>${escapeHtml(String(c))}</th>`).join('')}</tr></thead>
+                    <tbody>${t.rows.map(row => `<tr>${row.map(c => `<td>${c === null || c === undefined ? '' : escapeHtml(String(c))}</td>`).join('')}</tr>`).join('')}</tbody>
+                  </table>
+                </div>
+              </div>`).join('')}
+          </div>` : ''}
+        ${r.charts.length ? `
+          <div class="reportSection">
+            <div class="sectionTitle"><strong>Gráficos (${r.charts.length})</strong></div>
+            ${r.charts.map(c => `
+              <div class="chart">
+                <div class="chartHeader">
+                  <strong>${escapeHtml(c.title)}</strong>
+                  <button data-add-dash="${r.id}|${c.id}">Añadir al dashboard</button>
+                </div>
+                <div class="plotBox" data-plot="${r.id}_${c.id}"></div>
+              </div>`).join('')}
+          </div>` : ''}
+        <div class="resultFooter">
           <button data-rerun="${r.id}">Re-ejecutar</button>
           <button data-export-html="${r.id}">Exportar HTML</button>
         </div>
@@ -1015,7 +1107,28 @@ function renderPlot(divKey, chart) {
     return { ...t, marker: { ...(t.marker || {}), size: sizes, color: colors,
                               line: { width: t.customdata.map(id => sel.has(id) ? 2 : 0), color: 'white' } } };
   });
-  Plotly.react(el, data, { autosize: true, margin: { t: 24, l: 50, r: 20, b: 40 }, ...chart.layout }, { responsive: true, displaylogo: false });
+  const layout = {
+    autosize: true,
+    margin: { t: 24, l: 56, r: 24, b: 48 },
+    font: { family: 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif', size: 12, color: '#243b53' },
+    paper_bgcolor: 'white',
+    plot_bgcolor: '#fafbfd',
+    xaxis: { automargin: true, gridcolor: '#eef2f7', zerolinecolor: '#cbd2d9' },
+    yaxis: { automargin: true, gridcolor: '#eef2f7', zerolinecolor: '#cbd2d9' },
+    legend: { orientation: 'h', y: -0.18, xanchor: 'center', x: 0.5 },
+    ...chart.layout,
+  };
+  // Merge per-axis defaults without losing chart-specific titles/ranges
+  if (chart.layout?.xaxis) layout.xaxis = { ...layout.xaxis, ...chart.layout.xaxis };
+  if (chart.layout?.yaxis) layout.yaxis = { ...layout.yaxis, ...chart.layout.yaxis };
+
+  Plotly.react(el, data, layout, {
+    responsive: true,
+    displaylogo: false,
+    modeBarButtonsToRemove: ['lasso2d', 'select2d'],
+    toImageButtonOptions: { format: 'png', filename: chart.title || 'chart', scale: 2 },
+  });
+
   el.removeAllListeners?.('plotly_click');
   el.on?.('plotly_click', evt => {
     const ids = (evt.points || []).map(p => p.customdata).filter(Boolean);
@@ -1023,7 +1136,31 @@ function renderPlot(divKey, chart) {
     ids.forEach(id => state.selection.has(id) ? state.selection.delete(id) : state.selection.add(id));
     rebroadcastBrushing();
   });
+
+  // Observe container resize and ask Plotly to redraw at the new size
+  if (!el.__resizeObserver) {
+    const ro = new ResizeObserver(() => {
+      if (el.isConnected && el.clientWidth > 0) {
+        try { Plotly.Plots.resize(el); } catch { /* noop */ }
+      }
+    });
+    ro.observe(el);
+    el.__resizeObserver = ro;
+  }
 }
+
+// Global window-resize fallback for browsers that hiccup on container observers.
+let _resizeRaf = null;
+window.addEventListener('resize', () => {
+  if (_resizeRaf) cancelAnimationFrame(_resizeRaf);
+  _resizeRaf = requestAnimationFrame(() => {
+    document.querySelectorAll('[data-plot]').forEach(el => {
+      if (el.isConnected && el.clientWidth > 0) {
+        try { Plotly.Plots.resize(el); } catch { /* noop */ }
+      }
+    });
+  });
+});
 
 // ============================================================
 // Dashboard
@@ -1037,7 +1174,7 @@ function renderDashboard() {
     const tile = document.createElement('div'); tile.className = 'dashTile';
     tile.innerHTML = `
       <header><strong>${escapeHtml(c.title)}</strong><button class="close" data-rm="${item.id}">×</button></header>
-      <div class="tileBody"><div data-plot="dash_${item.id}" style="height: 280px;"></div></div>`;
+      <div class="tileBody"><div class="plotBox" data-plot="dash_${item.id}" style="min-height: 280px; height: 320px;"></div></div>`;
     view.appendChild(tile);
     renderPlot(`dash_${item.id}`, c);
   });
@@ -1070,6 +1207,14 @@ function switchTab(name) {
   if (name === 'data') $('#tabData').style.display = '';
   if (name === 'results') { $('#tabResults').style.display = ''; renderResults(); }
   if (name === 'dashboard') { $('#tabDashboard').style.display = ''; renderDashboard(); }
+  // Plots rendered while their tab was hidden have width 0; resize once visible.
+  requestAnimationFrame(() => {
+    document.querySelectorAll('[data-plot]').forEach(el => {
+      if (el.isConnected && el.clientWidth > 0) {
+        try { Plotly.Plots.resize(el); } catch { /* noop */ }
+      }
+    });
+  });
 }
 
 // ============================================================
