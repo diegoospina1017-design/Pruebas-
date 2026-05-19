@@ -142,6 +142,54 @@
     border-radius: var(--radius);
   }
 
+  /* JMP-style distribution block */
+  .distBlock {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: white;
+    margin: 0 0 22px;
+    overflow: hidden;
+  }
+  .distBlock .distHead {
+    background: linear-gradient(180deg, #f0f4f8 0%, #e2e8f0 100%);
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .distBlock .distHead strong {
+    font-size: 13px; color: var(--fg-strong);
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .distBlock .distHead small { color: var(--fg-muted); margin-left: auto; }
+  .distBlock .distNote {
+    font-size: 12px; color: var(--warning);
+    padding: 4px 14px;
+    background: #fefce8;
+    border-bottom: 1px solid #fde68a;
+  }
+  .distBody {
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(220px, 0.8fr) minmax(220px, 0.8fr);
+    gap: 14px;
+    padding: 14px;
+    align-items: start;
+  }
+  @media (max-width: 980px) {
+    .distBody { grid-template-columns: 1fr; }
+  }
+  .distBody .distChart { min-width: 0; }
+  .distBody .plotBox { height: 360px; min-height: 320px; }
+  .distBody .distTable { font-size: 12px; }
+  .distBody .distTable h4 {
+    margin: 0 0 4px; font-size: 12px;
+    color: var(--fg-strong);
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  .distBody .distTable table { border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
+  .distBody .distTable th { background: #f1f5f9; font-size: 11px; }
+  .distBody .distTable td { padding: 3px 8px; }
+  .distBody .distTable td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+
   .chart {
     width: 100%;
     margin: 0 0 22px;
@@ -785,52 +833,223 @@ function descStats(xs) {
   };
 }
 
+// ---- JMP-style distribution helpers ----
+
+// Inverse t-CDF via bisection on the stable t-CDF.
+function tInv(p, df) {
+  if (p <= 0) return -Infinity; if (p >= 1) return Infinity;
+  if (p < 0.5) return -tInv(1 - p, df);
+  let lo = 0, hi = 60;
+  for (let i = 0; i < 80; i++) {
+    const mid = (lo + hi) / 2;
+    if (tCdfStable(mid, df) < p) lo = mid; else hi = mid;
+    if (hi - lo < 1e-6) break;
+  }
+  return (lo + hi) / 2;
+}
+
+function summaryStats(xs, n_missing = 0) {
+  const n = xs.length;
+  if (!n) return null;
+  const m = mean(xs), sd = std(xs, true);
+  const se = sd / Math.sqrt(n);
+  const tcrit = n > 1 ? tInv(0.975, n - 1) : 0;
+  return {
+    n, n_missing,
+    mean: m, std: sd, se,
+    ci_low: m - tcrit * se,
+    ci_high: m + tcrit * se,
+    min: Math.min(...xs), max: Math.max(...xs),
+  };
+}
+
+const JMP_QUANTILE_LEVELS = [
+  { p: 1.000, label: '100.0%', tag: 'maximum' },
+  { p: 0.995, label: '99.5%',  tag: '' },
+  { p: 0.975, label: '97.5%',  tag: '' },
+  { p: 0.900, label: '90.0%',  tag: '' },
+  { p: 0.750, label: '75.0%',  tag: 'quartile' },
+  { p: 0.500, label: '50.0%',  tag: 'median' },
+  { p: 0.250, label: '25.0%',  tag: 'quartile' },
+  { p: 0.100, label: '10.0%',  tag: '' },
+  { p: 0.025, label: '2.5%',   tag: '' },
+  { p: 0.005, label: '0.5%',   tag: '' },
+  { p: 0.000, label: '0.0%',   tag: 'minimum' },
+];
+
+function quantilesTable(xs, title) {
+  return {
+    id: uid(),
+    title,
+    columns: ['', '', 'value'],
+    rows: JMP_QUANTILE_LEVELS.map(({ label, tag, p }) => [label, tag, fmt(quantile(xs, p), 6)]),
+  };
+}
+
+function summaryTable(s, title) {
+  return {
+    id: uid(),
+    title,
+    columns: ['statistic', 'value'],
+    rows: [
+      ['Mean',           fmt(s.mean, 7)],
+      ['Std Dev',        fmt(s.std, 7)],
+      ['Std Err Mean',   fmt(s.se, 7)],
+      ['Upper 95% Mean', fmt(s.ci_high, 7)],
+      ['Lower 95% Mean', fmt(s.ci_low, 7)],
+      ['N',              s.n],
+      ['N Missing',      s.n_missing],
+    ],
+  };
+}
+
+// Decide x-axis limits for the histogram. If the distribution has long-tail
+// outliers, clip to a robust range so the body of the data is readable.
+function smartXRange(xs) {
+  const n = xs.length;
+  if (n < 4) return { min: Math.min(...xs), max: Math.max(...xs), clipped: false };
+  const q1 = quantile(xs, .25), q3 = quantile(xs, .75);
+  const iqr = q3 - q1;
+  const min = Math.min(...xs), max = Math.max(...xs);
+  const lo = q1 - 3 * iqr, hi = q3 + 3 * iqr;
+  let inside = 0; for (const v of xs) if (v >= lo && v <= hi) inside++;
+  const tailFrac = 1 - inside / n;
+  // Clip when there ARE outliers AND they're a small fraction of the data.
+  if ((max > hi || min < lo) && tailFrac < 0.02 && iqr > 0) {
+    return { min: Math.max(lo, min), max: Math.min(hi, max), clipped: true };
+  }
+  return { min, max, clipped: false };
+}
+
+// Combined histogram + horizontal box plot (Plotly subplots).
+function distributionChart(xs, column) {
+  const range = smartXRange(xs);
+  const hiddenLow = xs.filter(v => v < range.min).length;
+  const hiddenHigh = xs.filter(v => v > range.max).length;
+  const clipNote = range.clipped
+    ? `Eje X recortado a [${fmt(range.min, 4)}, ${fmt(range.max, 4)}]; ` +
+      `ocultos ${hiddenLow + hiddenHigh} outliers (${fmt(((hiddenLow + hiddenHigh) / xs.length) * 100, 2)}%).`
+    : '';
+  return {
+    id: uid(),
+    title: `Distribución - ${column}`,
+    notes: clipNote,
+    traces: [
+      {
+        type: 'box', name: column, x: xs, orientation: 'h',
+        yaxis: 'y2', boxpoints: 'outliers', marker: { color: '#2563eb' },
+        line: { color: '#1e3a8a' }, fillcolor: 'rgba(37,99,235,0.18)',
+        showlegend: false, hoverinfo: 'x',
+      },
+      {
+        type: 'histogram', name: 'count', x: xs,
+        marker: { color: '#93c5fd', line: { color: '#1d4ed8', width: 1 } },
+        opacity: 0.95, showlegend: false,
+      },
+    ],
+    layout: {
+      bargap: 0.04,
+      showlegend: false,
+      xaxis: { title: column, range: [range.min, range.max], automargin: true, gridcolor: '#eef2f7' },
+      yaxis: { title: 'Count', domain: [0, 0.78], automargin: true, gridcolor: '#eef2f7' },
+      yaxis2: { domain: [0.82, 1], showticklabels: false, showgrid: false, zeroline: false, fixedrange: true },
+      margin: { t: 18, l: 56, r: 24, b: 48 },
+    },
+  };
+}
+
+function distributionBlock(column, group = null) {
+  const colName = group !== null ? `${column} | ${group}` : column;
+  const all = state.dataset.rows.map(r => r[column]);
+  const xs = (group !== null
+    ? state.dataset.rows.filter(r => r[group_byFor()] === group).map(r => r[column])
+    : all
+  ).filter(isNum).map(toNum);
+  if (!xs.length) return null;
+  const n_missing = all.length - all.filter(v => isNum(v)).length;
+  const s = summaryStats(xs, n_missing);
+  const chart = distributionChart(xs, colName);
+  return {
+    heading: colName,
+    note: chart.notes || '',
+    tables: [
+      quantilesTable(xs, 'Quantiles'),
+      summaryTable(s, 'Summary Statistics'),
+    ],
+    charts: [chart],
+  };
+}
+// Tiny closure-friendly accessor so distributionBlock can read group_by from outer call.
+let _groupByCol = null;
+function group_byFor() { return _groupByCol; }
+
 function runDescriptives({ columns, group_by }) {
   const cols = columns?.length ? columns : numCols();
   if (!cols.length) throw new Error('Sin columnas numéricas.');
-  const rows = []; let headers;
+  _groupByCol = group_by || null;
+
+  // Compact overview table (one row per variable / variable-group)
+  const overviewHeaders = group_by
+    ? ['variable', 'group', 'N', 'Mean', 'Std Dev', 'Std Err', 'Lower 95%', 'Upper 95%', 'Min', 'Median', 'Max']
+    : ['variable', 'N', 'Mean', 'Std Dev', 'Std Err', 'Lower 95%', 'Upper 95%', 'Min', 'Median', 'Max'];
+  const overviewRows = [];
+
+  const blocks = [];
   if (group_by) {
-    headers = ['variable', 'group', 'n', 'mean', 'std', 'min', 'Q1', 'median', 'Q3', 'max'];
     const groups = [...new Set(state.dataset.rows.map(r => r[group_by]))];
     for (const c of cols) {
       for (const g of groups) {
         const xs = state.dataset.rows.filter(r => r[group_by] === g).map(r => r[c]).filter(isNum).map(toNum);
-        const s = descStats(xs); if (!s) continue;
-        rows.push([c, String(g), s.n, fmt(s.mean), fmt(s.std), fmt(s.min), fmt(s.Q1), fmt(s.median), fmt(s.Q3), fmt(s.max)]);
+        if (!xs.length) continue;
+        const n_missing = state.dataset.rows.filter(r => r[group_by] === g).length - xs.length;
+        const s = summaryStats(xs, n_missing);
+        overviewRows.push([c, String(g), s.n, fmt(s.mean, 6), fmt(s.std, 6), fmt(s.se, 6),
+                           fmt(s.ci_low, 6), fmt(s.ci_high, 6), fmt(s.min), fmt(quantile(xs, .5)), fmt(s.max)]);
+        const block = distributionBlock(c, g);
+        if (block) blocks.push(block);
       }
     }
   } else {
-    headers = ['variable', 'n', 'mean', 'std', 'min', 'Q1', 'median', 'Q3', 'max'];
     for (const c of cols) {
-      const s = descStats(numericValues(c)); if (!s) continue;
-      rows.push([c, s.n, fmt(s.mean), fmt(s.std), fmt(s.min), fmt(s.Q1), fmt(s.median), fmt(s.Q3), fmt(s.max)]);
+      const xs = numericValues(c);
+      if (!xs.length) continue;
+      const n_missing = state.dataset.rows.length - xs.length;
+      const s = summaryStats(xs, n_missing);
+      overviewRows.push([c, s.n, fmt(s.mean, 6), fmt(s.std, 6), fmt(s.se, 6),
+                         fmt(s.ci_low, 6), fmt(s.ci_high, 6), fmt(s.min), fmt(quantile(xs, .5)), fmt(s.max)]);
+      const block = distributionBlock(c);
+      if (block) blocks.push(block);
     }
   }
-  const charts = cols.slice(0, 4).map(c => {
-    const xs = numericValues(c);
-    return { id: uid(), title: `Histograma - ${c}`, traces: [{ type: 'histogram', x: xs, name: c }],
-             layout: { xaxis: { title: c }, yaxis: { title: 'count' }, bargap: .05 } };
-  });
+
   return {
-    id: uid(), type: 'descriptives', title: 'Estadística descriptiva',
-    summary: `Descriptivos para ${cols.length} variable(s)${group_by ? ` agrupado por ${group_by}` : ''}.`,
-    tables: [{ id: uid(), title: 'Descriptivos', columns: headers, rows }],
-    charts, time: new Date(),
+    id: uid(), type: 'descriptives', title: 'Distributions',
+    summary: `Distribuciones para ${cols.length} variable(s)${group_by ? ` (agrupado por ${group_by})` : ''}.`,
+    tables: [{ id: uid(), title: 'Resumen', columns: overviewHeaders, rows: overviewRows }],
+    charts: [],
+    blocks,  // <-- per-variable JMP-style sections
+    time: new Date(),
   };
 }
 
 function runHistogram({ column }) {
   const xs = numericValues(column);
   if (!xs.length) throw new Error('Columna sin datos numéricos.');
-  const s = descStats(xs);
+  const n_missing = state.dataset.rows.length - xs.length;
+  const s = summaryStats(xs, n_missing);
+  const chart = distributionChart(xs, column);
   return {
-    id: uid(), type: 'histogram', title: `Histograma - ${column}`,
-    summary: `n=${s.n}, mean=${fmt(s.mean)}, std=${fmt(s.std)}.`,
-    tables: [{ id: uid(), title: 'Resumen', columns: ['n', 'mean', 'std', 'min', 'median', 'max'],
-               rows: [[s.n, fmt(s.mean), fmt(s.std), fmt(s.min), fmt(s.median), fmt(s.max)]] }],
-    charts: [{ id: uid(), title: `Histograma - ${column}`,
-               traces: [{ type: 'histogram', x: xs, name: column }],
-               layout: { xaxis: { title: column }, yaxis: { title: 'count' }, bargap: .05 } }],
+    id: uid(), type: 'histogram', title: `Distribution - ${column}`,
+    summary: `n=${s.n}, mean=${fmt(s.mean)}, std=${fmt(s.std)}` +
+             (chart.notes ? `. ${chart.notes}` : '.'),
+    tables: [],
+    charts: [],
+    blocks: [{
+      heading: column,
+      note: chart.notes || '',
+      tables: [quantilesTable(xs, 'Quantiles'), summaryTable(s, 'Summary Statistics')],
+      charts: [chart],
+    }],
     time: new Date(),
   };
 }
@@ -1048,6 +1267,30 @@ function renderResults() {
                 </div>
               </div>`).join('')}
           </div>` : ''}
+        ${r.blocks?.length ? `
+          <div class="reportSection">
+            <div class="sectionTitle"><strong>Distributions (${r.blocks.length})</strong></div>
+            ${r.blocks.map(b => `
+              <div class="distBlock">
+                <div class="distHead">
+                  <strong>${escapeHtml(b.heading)}</strong>
+                  ${b.charts?.[0] ? `<small><button data-add-dash="${r.id}|${b.charts[0].id}" style="font-size:11px;padding:2px 8px;">Añadir al dashboard</button></small>` : ''}
+                </div>
+                ${b.note ? `<div class="distNote">${escapeHtml(b.note)}</div>` : ''}
+                <div class="distBody">
+                  ${b.charts?.[0] ? `<div class="distChart"><div class="plotBox" data-plot="${r.id}_${b.charts[0].id}"></div></div>` : '<div></div>'}
+                  ${(b.tables || []).map(t => `
+                    <div class="distTable">
+                      <h4>${escapeHtml(t.title)}</h4>
+                      <table>
+                        <tbody>
+                          ${t.rows.map(row => `<tr>${row.map(c => `<td>${c === null || c === undefined ? '' : escapeHtml(String(c))}</td>`).join('')}</tr>`).join('')}
+                        </tbody>
+                      </table>
+                    </div>`).join('')}
+                </div>
+              </div>`).join('')}
+          </div>` : ''}
         ${r.charts.length ? `
           <div class="reportSection">
             <div class="sectionTitle"><strong>Gráficos (${r.charts.length})</strong></div>
@@ -1067,6 +1310,7 @@ function renderResults() {
       </div>`;
     list.appendChild(card);
     r.charts.forEach(c => renderPlot(`${r.id}_${c.id}`, c));
+    (r.blocks || []).forEach(b => (b.charts || []).forEach(c => renderPlot(`${r.id}_${c.id}`, c)));
   });
   // Bind handlers
   list.querySelectorAll('[data-toggle]').forEach(el => el.addEventListener('click', () => {
@@ -1170,7 +1414,9 @@ function renderDashboard() {
   const view = $('#dashboardView'); view.innerHTML = '';
   state.dashboard.forEach(item => {
     const r = state.results.find(x => x.id === item.resultId); if (!r) return;
-    const c = r.charts.find(x => x.id === item.refId); if (!c) return;
+    let c = r.charts.find(x => x.id === item.refId);
+    if (!c) for (const b of (r.blocks || [])) { c = (b.charts || []).find(x => x.id === item.refId); if (c) break; }
+    if (!c) return;
     const tile = document.createElement('div'); tile.className = 'dashTile';
     tile.innerHTML = `
       <header><strong>${escapeHtml(c.title)}</strong><button class="close" data-rm="${item.id}">×</button></header>
@@ -1189,7 +1435,10 @@ function renderDashboard() {
 // ============================================================
 function rebroadcastBrushing() {
   // Update all visible plots and grid
-  state.results.forEach(r => r.charts.forEach(c => renderPlot(`${r.id}_${c.id}`, c)));
+  state.results.forEach(r => {
+    r.charts.forEach(c => renderPlot(`${r.id}_${c.id}`, c));
+    (r.blocks || []).forEach(b => (b.charts || []).forEach(c => renderPlot(`${r.id}_${c.id}`, c)));
+  });
   state.dashboard.forEach(item => {
     const r = state.results.find(x => x.id === item.resultId); const c = r?.charts.find(x => x.id === item.refId);
     if (c) renderPlot(`dash_${item.id}`, c);
@@ -1275,6 +1524,20 @@ function makeReportHTML(results) {
       const cid = `c_${i}_${ci}`;
       parts.push(`<div class="chart"><h4>${escapeHtml(c.title)}</h4><div id="${cid}" style="height:380px"></div>`);
       parts.push(`<script>Plotly.newPlot('${cid}', ${JSON.stringify(c.traces)}, Object.assign({title:${JSON.stringify(c.title)}}, ${JSON.stringify(c.layout || {})}), {responsive:true});<\/script></div>`);
+    });
+    (r.blocks || []).forEach((b, bi) => {
+      parts.push(`<h3 style="border-top:1px solid #d8dee5;padding-top:10px;margin-top:18px;">${escapeHtml(b.heading)}</h3>`);
+      if (b.note) parts.push(`<p style="background:#fefce8;border-left:4px solid #b45309;padding:6px 10px;font-size:12px;">${escapeHtml(b.note)}</p>`);
+      (b.charts || []).forEach((c, ci) => {
+        const cid = `c_${i}_b${bi}_${ci}`;
+        parts.push(`<div class="chart"><div id="${cid}" style="height:380px"></div>`);
+        parts.push(`<script>Plotly.newPlot('${cid}', ${JSON.stringify(c.traces)}, Object.assign({title:${JSON.stringify(c.title)}}, ${JSON.stringify(c.layout || {})}), {responsive:true});<\/script></div>`);
+      });
+      (b.tables || []).forEach(t => {
+        parts.push(`<h4 style="margin:8px 0 4px;">${escapeHtml(t.title)}</h4><table><tbody>`);
+        t.rows.forEach(row => { parts.push('<tr>' + row.map(c => `<td>${c === null || c === undefined ? '' : escapeHtml(String(c))}</td>`).join('') + '</tr>'); });
+        parts.push('</tbody></table>');
+      });
     });
   });
   parts.push('</body></html>');
