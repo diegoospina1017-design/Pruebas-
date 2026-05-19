@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<title>StatStudio Web - HTML standalone</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+<style>
+  :root {
+    --bg-app: #f7f9fc; --bg-panel: #ffffff; --bg-soft: #eef2f7;
+    --bg-toolbar: #334e68; --fg-strong: #102a43; --fg: #243b53;
+    --fg-muted: #627d98; --fg-on-dark: #f0f4f8; --accent: #2563eb;
+    --accent-soft: #dbeafe; --warning: #b45309; --danger: #b91c1c;
+    --border: #d8dee5; --radius: 6px;
+    --shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font: 14px -apple-system, "Segoe UI", Roboto, Arial, sans-serif; color: var(--fg); background: var(--bg-app); }
+  button { font: inherit; cursor: pointer; background: var(--bg-panel); color: var(--fg); border: 1px solid var(--border); padding: 6px 12px; border-radius: var(--radius); }
+  button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  button.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  input, select { font: inherit; padding: 5px 8px; border: 1px solid var(--border); border-radius: var(--radius); background: white; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
+  th { background: var(--bg-soft); position: sticky; top: 0; }
+  kbd { background: var(--bg-soft); border: 1px solid var(--border); border-radius: 4px; padding: 1px 6px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; }
+
+  .app { display: flex; flex-direction: column; height: 100vh; }
+
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; padding: 8px 14px; background: var(--bg-toolbar);
+    color: var(--fg-on-dark); box-shadow: var(--shadow); z-index: 10;
+  }
+  .toolbar .brand { display: flex; align-items: center; gap: 10px; }
+  .toolbar .logo {
+    width: 26px; height: 26px; border-radius: 6px; background: var(--accent);
+    color: white; display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: ui-monospace, monospace;
+  }
+  .toolbar .actions { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .toolbar button { background: transparent; color: var(--fg-on-dark); border-color: #486581; }
+  .toolbar button:hover:not(:disabled) { background: #486581; color: white; border-color: #486581; }
+  .toolbar select { background: #486581; color: white; border-color: #486581; }
+  .tabs { display: inline-flex; margin-left: 12px; }
+  .tabs button { border-radius: 0; margin-right: -1px; }
+  .tabs button:first-child { border-top-left-radius: var(--radius); border-bottom-left-radius: var(--radius); }
+  .tabs button:last-child { border-top-right-radius: var(--radius); border-bottom-right-radius: var(--radius); }
+  .tabs button.active { background: var(--accent); border-color: var(--accent); }
+
+  .body { display: flex; flex: 1; min-height: 0; }
+  .sidebar { width: 240px; background: var(--bg-panel); border-right: 1px solid var(--border); padding: 12px; overflow-y: auto; }
+  .sidebar h3 { margin: 0 0 6px; font-size: 12px; text-transform: uppercase; color: var(--fg-muted); letter-spacing: .04em; }
+  .sidebar section { margin-bottom: 18px; }
+  .sidebar .ds { background: var(--bg-soft); padding: 8px 10px; border-radius: var(--radius); }
+  .sidebar .ds small { color: var(--fg-muted); display: block; margin-top: 2px; }
+  .sidebar .cols { list-style: none; padding: 0; margin: 0; max-height: 220px; overflow-y: auto; font-size: 13px; }
+  .sidebar .cols li { display: flex; justify-content: space-between; padding: 3px 8px; border-bottom: 1px solid var(--bg-soft); }
+  .sidebar .cols small { color: var(--fg-muted); font-size: 11px; }
+  .sidebar .samples button { display: block; width: 100%; text-align: left; padding: 4px 8px; font-size: 12px; background: var(--bg-soft); margin-bottom: 4px; }
+  .sidebar .history { list-style: none; padding: 0; margin: 0; }
+  .sidebar .history li { font-size: 12px; padding: 2px 4px; border-bottom: 1px dashed var(--bg-soft); display: flex; justify-content: space-between; }
+  .sidebar .history code { background: var(--bg-soft); padding: 1px 4px; border-radius: 3px; font-size: 11px; }
+
+  main { flex: 1; overflow: auto; padding: 14px; min-width: 0; }
+
+  .empty { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; text-align: center; gap: 10px; }
+  .empty h2 { color: var(--fg-strong); }
+
+  .gridControls { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-wrap: wrap; }
+  .gridControls input[type="search"] { flex: 0 0 220px; }
+  .gridWrap { background: white; border: 1px solid var(--border); border-radius: var(--radius); overflow: auto; max-height: calc(100vh - 200px); }
+  .gridWrap th { background: var(--bg-soft); }
+  .gridWrap td.sel { background: #fee2e2 !important; }
+  .gridWrap tr.sel td { background: #fef3c7; }
+  .gridWrap td[contenteditable="true"]:focus { outline: 2px solid var(--accent); background: #fffbea; }
+  .typeBar { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; max-height: 64px; overflow-y: auto; }
+  .typePill { display: inline-flex; gap: 4px; background: white; border: 1px solid var(--border); border-radius: var(--radius); font-size: 12px; align-items: center; }
+  .typePill span { padding: 3px 8px; font-weight: 500; color: var(--fg-strong); }
+  .typePill select { border: none; border-left: 1px solid var(--border); padding: 2px 4px; font-size: 11px; border-radius: 0 var(--radius) var(--radius) 0; background: var(--bg-soft); }
+
+  .resultCard { background: white; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px; box-shadow: var(--shadow); }
+  .resultCard header { display: flex; align-items: center; gap: 12px; padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--border); }
+  .resultCard header h3 { margin: 0; font-size: 14px; color: var(--fg-strong); flex: 1; }
+  .resultCard header small { color: var(--fg-muted); }
+  .kind { background: var(--accent-soft); color: var(--accent); padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; }
+  .resultCard .body { padding: 12px 14px; }
+  .resultCard.collapsed .body { display: none; }
+  .summary { background: var(--bg-soft); border-left: 4px solid var(--accent); padding: 8px 12px; margin: 0 0 10px; border-radius: 4px; }
+  .chart { border: 1px solid var(--border); border-radius: var(--radius); padding: 8px; margin: 12px 0; background: white; }
+
+  .modalBackdrop { position: fixed; inset: 0; background: rgba(16,42,67,.5); z-index: 100; display: none; align-items: center; justify-content: center; }
+  .modalBackdrop.open { display: flex; }
+  .modal { background: white; border-radius: 10px; width: min(640px, 95vw); max-height: 90vh; overflow: auto; box-shadow: 0 10px 40px rgba(0,0,0,.2); }
+  .modal header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid var(--border); }
+  .modal header h3 { margin: 0; color: var(--fg-strong); }
+  .modal header button.close { background: transparent; border: none; font-size: 22px; padding: 0 4px; }
+  .modal .body { padding: 14px 16px; }
+  .modal .footer { padding: 10px 16px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+  .formRow { display: flex; align-items: center; margin-bottom: 10px; gap: 10px; }
+  .formRow > label { width: 160px; flex-shrink: 0; }
+  .formRow > input, .formRow > select { flex: 1; }
+  .error { color: var(--danger); background: #fef2f2; border: 1px solid #fecaca; padding: 8px; border-radius: 6px; margin: 8px 16px; }
+
+  .dashGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; }
+  .dashTile { background: white; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .dashTile header { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-bottom: 1px solid var(--border); background: var(--bg-soft); }
+  .dashTile header strong { font-size: 13px; color: var(--fg-strong); }
+  .dashTile header button.close { background: transparent; border: none; font-size: 16px; }
+  .dashTile .tileBody { padding: 8px; min-height: 220px; }
+
+  @media print { .no-print, .no-print * { display: none !important; } body { background: white; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="toolbar no-print">
+    <div class="brand">
+      <span class="logo">S</span>
+      <strong>StatStudio Web</strong>
+      <small style="color: #cbd2d9; border-left: 1px solid #486581; padding-left: 10px; margin-left: 10px;" id="projectName">Untitled project</small>
+    </div>
+    <div class="actions">
+      <button id="btnImport">Importar CSV</button>
+      <button id="btnSave" disabled>Guardar proyecto</button>
+      <button id="btnLoad">Cargar proyecto</button>
+      <button id="btnPrint" disabled>Reporte HTML</button>
+      <select id="analysisSelect" disabled>
+        <option value="">Análisis…</option>
+        <option value="descriptives">Estadística descriptiva</option>
+        <option value="histogram">Histograma</option>
+        <option value="boxplot">Boxplot</option>
+        <option value="scatter">Scatter + OLS</option>
+        <option value="correlation">Matriz de correlación</option>
+        <option value="ttest_one">t-test (una muestra)</option>
+        <option value="ttest_two">t-test (dos muestras)</option>
+        <option value="anova">ANOVA un factor</option>
+      </select>
+      <div class="tabs">
+        <button class="active" data-tab="data">Datos</button>
+        <button data-tab="results">Resultados</button>
+        <button data-tab="dashboard">Dashboard</button>
+      </div>
+      <button id="btnHelp" title="Atajos" style="border-radius: 50%; width: 28px; padding: 0;">?</button>
+    </div>
+  </header>
+
+  <div class="body">
+    <aside class="sidebar no-print">
+      <section>
+        <h3>Dataset</h3>
+        <div id="sidebarDataset"><p style="color: var(--fg-muted);">Sin dataset.</p></div>
+      </section>
+      <section>
+        <h3>Columnas</h3>
+        <ul class="cols" id="sidebarColumns"><li><small>—</small></li></ul>
+      </section>
+      <section>
+        <h3>Datasets de muestra</h3>
+        <div class="samples">
+          <button data-sample="iris">iris</button>
+          <button data-sample="mtcars">mtcars</button>
+          <button data-sample="tooth">ToothGrowth</button>
+        </div>
+      </section>
+      <section>
+        <h3>Historial</h3>
+        <ul class="history" id="sidebarHistory"></ul>
+      </section>
+    </aside>
+
+    <main id="main">
+      <section id="tabData" class="tabPanel">
+        <div class="empty" id="emptyState">
+          <h2>Bienvenido a StatStudio Web</h2>
+          <p>Versión HTML standalone — sin servidor, sin build. Importa un CSV o carga una muestra.</p>
+          <button class="primary" id="emptyImport">Importar CSV</button>
+          <p style="color: var(--fg-muted); margin-top: 12px;">
+            Atajos: <kbd>Ctrl/Cmd+O</kbd> importar &middot; <kbd>Ctrl/Cmd+S</kbd> guardar &middot; <kbd>?</kbd> ayuda
+          </p>
+        </div>
+        <div id="gridView" style="display: none;">
+          <div class="gridControls">
+            <input type="search" id="gridSearch" placeholder="Buscar en grid…">
+            <button id="btnAddCol">+ Columna calculada</button>
+            <button id="btnExportCsv">Exportar CSV</button>
+            <span style="flex:1"></span>
+            <small id="selCount">Selección: 0 fila(s)</small>
+          </div>
+          <div class="typeBar" id="typeBar"></div>
+          <div class="gridWrap">
+            <table id="gridTable"><thead></thead><tbody></tbody></table>
+          </div>
+        </div>
+      </section>
+
+      <section id="tabResults" class="tabPanel" style="display: none;">
+        <div id="resultsList"><p style="color: var(--fg-muted); text-align: center; margin-top: 40px;">Aún no hay análisis. Selecciona uno en el menú superior.</p></div>
+      </section>
+
+      <section id="tabDashboard" class="tabPanel" style="display: none;">
+        <div id="dashboardView" class="dashGrid"></div>
+        <p id="dashEmpty" style="color: var(--fg-muted); text-align: center; margin-top: 40px;">Dashboard vacío. Añade gráficos desde Resultados.</p>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modalBackdrop" id="modalAnalysis">
+  <div class="modal">
+    <header><h3 id="modalTitle">Análisis</h3><button class="close">×</button></header>
+    <div class="body" id="modalBody"></div>
+    <div class="error" id="modalError" style="display: none;"></div>
+    <div class="footer">
+      <button class="close">Cancelar</button>
+      <button class="primary" id="modalRun">Ejecutar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBackdrop" id="modalHelp">
+  <div class="modal" style="max-width: 480px;">
+    <header><h3>Atajos</h3><button class="close">×</button></header>
+    <div class="body">
+      <table>
+        <tr><td><kbd>Ctrl/Cmd+O</kbd></td><td>Importar archivo</td></tr>
+        <tr><td><kbd>Ctrl/Cmd+S</kbd></td><td>Guardar proyecto</td></tr>
+        <tr><td><kbd>Ctrl/Cmd+P</kbd></td><td>Reporte HTML</td></tr>
+        <tr><td><kbd>?</kbd></td><td>Esta ayuda</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Cerrar diálogos</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="fileInput" accept=".csv" style="display: none;">
+<input type="file" id="projectInput" accept=".json" style="display: none;">
+
+<script>
+// ============================================================
+// State
+// ============================================================
+const state = {
+  dataset: null,            // { name, columns: [{name,type}], rows: [{...}], rowIds: [] }
+  selection: new Set(),
+  results: [],              // [{id, type, title, summary, tables:[], charts:[], time}]
+  dashboard: [],            // [{id, kind:'chart'|'table', resultId, refId, title}]
+  history: [],
+  projectName: 'Untitled project',
+};
+const TYPES = ['numeric', 'integer', 'categorical', 'boolean', 'datetime', 'text'];
+
+// ============================================================
+// Utilities
+// ============================================================
+const $ = (sel) => document.querySelector(sel);
+const $$ = (sel) => document.querySelectorAll(sel);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const isNum = (v) => v !== null && v !== '' && !isNaN(Number(v));
+const toNum = (v) => Number(v);
+const fmt = (v, d = 4) => (v === null || v === undefined || !isFinite(v)) ? '' : (Math.round(v * 10**d) / 10**d);
+
+function logEvent(kind, payload = {}) {
+  state.history.push({ id: uid(), kind, ts: new Date().toISOString(), payload });
+  renderSidebar();
+}
+
+function isNumericType(t) { return t === 'numeric' || t === 'integer'; }
+function numCols() { return state.dataset.columns.filter(c => isNumericType(c.type)).map(c => c.name); }
+function catCols() { return state.dataset.columns.filter(c => !isNumericType(c.type) && c.type !== 'datetime').map(c => c.name); }
+function colValues(col, dropNull = true) {
+  const v = state.dataset.rows.map(r => r[col]);
+  return dropNull ? v.filter(x => x !== null && x !== undefined && x !== '' && !(typeof x === 'number' && isNaN(x))) : v;
+}
+function numericValues(col) { return colValues(col).map(toNum).filter(x => isFinite(x)); }
+
+// ============================================================
+// Statistics primitives
+// ============================================================
+function mean(xs) { return xs.reduce((a,b) => a + b, 0) / xs.length; }
+function variance(xs, sample = true) {
+  if (xs.length < 2) return 0;
+  const m = mean(xs); const s = xs.reduce((a,b) => a + (b-m)**2, 0);
+  return s / (sample ? xs.length - 1 : xs.length);
+}
+function std(xs, sample = true) { return Math.sqrt(variance(xs, sample)); }
+function quantile(xs, q) {
+  const a = [...xs].sort((x,y) => x - y);
+  const pos = (a.length - 1) * q;
+  const lo = Math.floor(pos), hi = Math.ceil(pos);
+  if (lo === hi) return a[lo];
+  return a[lo] + (a[hi] - a[lo]) * (pos - lo);
+}
+function median(xs) { return quantile(xs, 0.5); }
+
+// Normal CDF/inv via erf
+function erf(x) {
+  const a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+  const sign = x < 0 ? -1 : 1; x = Math.abs(x);
+  const t = 1 / (1 + p * x);
+  const y = 1 - ((((a5*t + a4)*t + a3)*t + a2)*t + a1)*t * Math.exp(-x*x);
+  return sign * y;
+}
+const normCdf = (z) => 0.5 * (1 + erf(z / Math.SQRT2));
+
+// Student-t two-sided p-value via incomplete beta approximation
+function tCdf(t, df) {
+  // Cornish-Fisher-ish approximation via beta regularized incomplete:
+  // Use the regularized incomplete beta function I_x(a,b).
+  const x = df / (df + t * t);
+  const ib = betaInc(x, df / 2, 0.5);
+  const p = 0.5 * ib;
+  return t < 0 ? p : 1 - p;
+}
+function tPvalue2Sided(t, df) { return 2 * (1 - tCdf(Math.abs(t), df)); }
+
+// Regularized incomplete beta function I_x(a,b) using continued fraction (Numerical Recipes)
+function betaInc(x, a, b) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  const lnBeta = lgamma(a) + lgamma(b) - lgamma(a + b);
+  const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lnBeta) / a;
+  return x < (a + 1) / (a + b + 2) ? front * betacf(x, a, b) : 1 - front * betacf(1 - x, b, a) * (a / b * Math.pow((1-x)/x, 1));
+  // Simpler stable form:
+}
+// Override with stable implementation
+function betacf(x, a, b) {
+  const MAXIT = 200, EPS = 3e-7, FPMIN = 1e-30;
+  let qab = a + b, qap = a + 1, qam = a - 1;
+  let c = 1, d = 1 - qab * x / qap;
+  if (Math.abs(d) < FPMIN) d = FPMIN;
+  d = 1 / d; let h = d;
+  for (let m = 1; m <= MAXIT; m++) {
+    const m2 = 2 * m;
+    let aa = m * (b - m) * x / ((qam + m2) * (a + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d; h *= d * c;
+    aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2));
+    d = 1 + aa * d; if (Math.abs(d) < FPMIN) d = FPMIN;
+    c = 1 + aa / c; if (Math.abs(c) < FPMIN) c = FPMIN;
+    d = 1 / d;
+    const del = d * c; h *= del;
+    if (Math.abs(del - 1) < EPS) break;
+  }
+  return h;
+}
+function lgamma(z) {
+  const g = 7;
+  const c = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313,
+             -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6,
+             1.5056327351493116e-7];
+  if (z < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * z)) - lgamma(1 - z);
+  z -= 1;
+  let x = c[0]; for (let i = 1; i < g + 2; i++) x += c[i] / (z + i);
+  const t = z + g + 0.5;
+  return 0.5 * Math.log(2 * Math.PI) + (z + 0.5) * Math.log(t) - t + Math.log(x);
+}
+function betaIncStable(x, a, b) {
+  if (x <= 0) return 0; if (x >= 1) return 1;
+  const lnBeta = lgamma(a) + lgamma(b) - lgamma(a + b);
+  const front = Math.exp(Math.log(x) * a + Math.log(1 - x) * b - lnBeta);
+  if (x < (a + 1) / (a + b + 2)) return front * betacf(x, a, b) / a;
+  return 1 - front * betacf(1 - x, b, a) / b;
+}
+// fix tCdf using stable beta
+function tCdfStable(t, df) {
+  const x = df / (df + t * t);
+  const I = betaIncStable(x, df / 2, 0.5);
+  return t < 0 ? 0.5 * I : 1 - 0.5 * I;
+}
+
+// F-distribution survival via incomplete beta
+function fSf(F, df1, df2) {
+  if (F <= 0) return 1;
+  const x = df2 / (df2 + df1 * F);
+  return betaIncStable(x, df2 / 2, df1 / 2);
+}
+
+// ============================================================
+// CSV parsing
+// ============================================================
+function parseCSV(text) {
+  const rows = [];
+  let cur = '', row = [], inQ = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (inQ) {
+      if (ch === '"' && text[i+1] === '"') { cur += '"'; i++; }
+      else if (ch === '"') inQ = false;
+      else cur += ch;
+    } else {
+      if (ch === '"') inQ = true;
+      else if (ch === ',') { row.push(cur); cur = ''; }
+      else if (ch === '\n') { row.push(cur); rows.push(row); cur = ''; row = []; }
+      else if (ch !== '\r') cur += ch;
+    }
+  }
+  if (cur !== '' || row.length) { row.push(cur); rows.push(row); }
+  if (!rows.length) return { columns: [], rows: [] };
+  const header = rows[0];
+  const data = rows.slice(1).filter(r => r.some(v => v !== ''))
+    .map(r => Object.fromEntries(header.map((h, i) => [h, parseValue(r[i])])));
+  const columns = header.map(name => ({ name, type: inferType(data.map(r => r[name])) }));
+  return { columns, rows: data };
+}
+function parseValue(v) {
+  if (v === undefined || v === '') return null;
+  if (v === 'true' || v === 'TRUE') return true;
+  if (v === 'false' || v === 'FALSE') return false;
+  const n = Number(v); if (!isNaN(n) && v.trim() !== '') return n;
+  return v;
+}
+function inferType(values) {
+  const nonNull = values.filter(v => v !== null && v !== undefined && v !== '');
+  if (!nonNull.length) return 'text';
+  const numeric = nonNull.every(v => typeof v === 'number');
+  if (numeric) return nonNull.every(v => Number.isInteger(v)) ? 'integer' : 'numeric';
+  if (nonNull.every(v => typeof v === 'boolean')) return 'boolean';
+  const uniq = new Set(nonNull.map(String));
+  if (uniq.size <= Math.max(20, nonNull.length * 0.05)) return 'categorical';
+  return 'text';
+}
+function toCSV(ds) {
+  const cols = ds.columns.map(c => c.name);
+  const escape = v => {
+    if (v === null || v === undefined) return '';
+    const s = String(v);
+    return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+  };
+  return [cols.join(','), ...ds.rows.map(r => cols.map(c => escape(r[c])).join(','))].join('\n');
+}
+
+// ============================================================
+// Dataset operations
+// ============================================================
+function setDataset(name, parsed) {
+  const rowIds = parsed.rows.map((_, i) => `r${i}`);
+  state.dataset = { name, columns: parsed.columns, rows: parsed.rows, rowIds };
+  state.selection.clear();
+  logEvent('dataset_imported', { name, n_rows: parsed.rows.length });
+  $('#btnSave').disabled = false; $('#btnPrint').disabled = false; $('#analysisSelect').disabled = false;
+  $('#projectName').textContent = state.projectName;
+  $('#emptyState').style.display = 'none'; $('#gridView').style.display = 'block';
+  renderGrid(); renderSidebar();
+}
+
+function loadSample(key) {
+  const data = SAMPLES[key]; if (!data) return;
+  const parsed = parseCSV(data.csv);
+  state.projectName = data.name;
+  setDataset(data.name, parsed);
+}
+
+// ============================================================
+// Rendering: sidebar
+// ============================================================
+function renderSidebar() {
+  const ds = state.dataset;
+  $('#sidebarDataset').innerHTML = ds
+    ? `<div class="ds"><strong>${escapeHtml(ds.name)}</strong><small>${ds.rows.length} filas &middot; ${ds.columns.length} cols</small></div>`
+    : '<p style="color: var(--fg-muted);">Sin dataset.</p>';
+  $('#sidebarColumns').innerHTML = ds
+    ? ds.columns.map(c => `<li><span>${escapeHtml(c.name)}</span><small>${c.type}</small></li>`).join('')
+    : '<li><small>—</small></li>';
+  $('#sidebarHistory').innerHTML = state.history.slice(-10).reverse()
+    .map(e => `<li><code>${escapeHtml(e.kind)}</code><small>${new Date(e.ts).toLocaleTimeString()}</small></li>`).join('');
+}
+
+// ============================================================
+// Rendering: grid
+// ============================================================
+function renderGrid() {
+  const ds = state.dataset; if (!ds) return;
+  $('#typeBar').innerHTML = ds.columns.map(c => `
+    <span class="typePill">
+      <span data-rename="${escapeAttr(c.name)}" title="Click para renombrar" style="cursor:pointer;">${escapeHtml(c.name)}</span>
+      <select data-type="${escapeAttr(c.name)}">
+        ${TYPES.map(t => `<option value="${t}"${t === c.type ? ' selected' : ''}>${t}</option>`).join('')}
+      </select>
+    </span>`).join('');
+
+  $$('#typeBar [data-rename]').forEach(el => el.addEventListener('click', () => renameColumn(el.dataset.rename)));
+  $$('#typeBar [data-type]').forEach(el => el.addEventListener('change', () => changeColumnType(el.dataset.type, el.value)));
+
+  const cols = ds.columns;
+  const thead = `<tr>
+    <th style="width:48px;">#</th>
+    ${cols.map(c => `<th>${escapeHtml(c.name)} <small style="color:var(--fg-muted);font-weight:normal;">(${c.type})</small></th>`).join('')}
+  </tr>`;
+  const filter = ($('#gridSearch').value || '').trim().toLowerCase();
+  const rows = ds.rows.map((r, i) => ({ r, i, id: ds.rowIds[i] }))
+    .filter(({r}) => !filter || cols.some(c => String(r[c.name] ?? '').toLowerCase().includes(filter)));
+  const tbody = rows.map(({r, i, id}) => `
+    <tr data-rowid="${id}" class="${state.selection.has(id) ? 'sel' : ''}">
+      <td><input type="checkbox" data-sel="${id}" ${state.selection.has(id) ? 'checked' : ''}> ${i+1}</td>
+      ${cols.map(c => `<td contenteditable="true" data-row="${i}" data-col="${escapeAttr(c.name)}">${cellHtml(r[c.name])}</td>`).join('')}
+    </tr>`).join('');
+  const tbl = $('#gridTable');
+  tbl.querySelector('thead').innerHTML = thead;
+  tbl.querySelector('tbody').innerHTML = tbody;
+
+  // Bind handlers
+  tbl.querySelectorAll('[data-sel]').forEach(cb => {
+    cb.addEventListener('change', () => {
+      if (cb.checked) state.selection.add(cb.dataset.sel); else state.selection.delete(cb.dataset.sel);
+      $('#selCount').textContent = `Selección: ${state.selection.size} fila(s)`;
+      renderGrid(); rebroadcastBrushing();
+    });
+  });
+  tbl.querySelectorAll('td[contenteditable="true"]').forEach(td => {
+    td.addEventListener('blur', () => {
+      const ri = +td.dataset.row, c = td.dataset.col;
+      const colMeta = ds.columns.find(cc => cc.name === c);
+      let val = td.innerText.trim();
+      if (val === '') val = null;
+      else if (isNumericType(colMeta.type) && isNum(val)) val = Number(val);
+      else if (colMeta.type === 'boolean') val = /^(true|1|yes|y)$/i.test(val) ? true : (/^(false|0|no|n)$/i.test(val) ? false : val);
+      ds.rows[ri][c] = val;
+      logEvent('cell_edit', { row: ri, col: c });
+    });
+  });
+  $('#selCount').textContent = `Selección: ${state.selection.size} fila(s)`;
+}
+
+function cellHtml(v) {
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'number') return String(v);
+  return escapeHtml(String(v));
+}
+function renameColumn(oldName) {
+  const newName = prompt(`Renombrar columna "${oldName}" a:`, oldName);
+  if (!newName || newName === oldName) return;
+  if (state.dataset.columns.some(c => c.name === newName)) { alert('Ya existe.'); return; }
+  state.dataset.columns = state.dataset.columns.map(c => c.name === oldName ? { ...c, name: newName } : c);
+  state.dataset.rows = state.dataset.rows.map(r => { const { [oldName]: v, ...rest } = r; return { ...rest, [newName]: v }; });
+  logEvent('column_rename', { from: oldName, to: newName });
+  renderGrid(); renderSidebar();
+}
+function changeColumnType(name, type) {
+  state.dataset.columns = state.dataset.columns.map(c => c.name === name ? { ...c, type } : c);
+  logEvent('column_type_change', { column: name, type });
+  renderSidebar();
+}
+
+// ============================================================
+// Modal / Analysis dialogs
+// ============================================================
+const DIALOG_DEFS = {
+  descriptives: { title: 'Estadística descriptiva', fields: [
+    { key: 'columns', label: 'Variables', type: 'multi-num' },
+    { key: 'group_by', label: 'Agrupar por (opcional)', type: 'select-cat-optional' }] },
+  histogram:    { title: 'Histograma', fields: [{ key: 'column', label: 'Variable', type: 'select-num' }] },
+  boxplot:      { title: 'Boxplot', fields: [
+    { key: 'column', label: 'Variable', type: 'select-num' },
+    { key: 'group_by', label: 'Agrupar por (opcional)', type: 'select-cat-optional' }] },
+  scatter:      { title: 'Scatter + OLS', fields: [
+    { key: 'x', label: 'X', type: 'select-num' },
+    { key: 'y', label: 'Y', type: 'select-num' }] },
+  correlation:  { title: 'Matriz de correlación', fields: [{ key: 'columns', label: 'Variables', type: 'multi-num' }] },
+  ttest_one:    { title: 't-test (una muestra)', fields: [
+    { key: 'column', label: 'Variable', type: 'select-num' },
+    { key: 'mu0', label: 'mu0', type: 'number', default: 0 }] },
+  ttest_two:    { title: 't-test (dos muestras)', fields: [
+    { key: 'value', label: 'Variable (num)', type: 'select-num' },
+    { key: 'group', label: 'Grupo (cat)', type: 'select-cat' }] },
+  anova:        { title: 'ANOVA un factor', fields: [
+    { key: 'response', label: 'Respuesta (num)', type: 'select-num' },
+    { key: 'factor', label: 'Factor (cat)', type: 'select-cat' }] },
+};
+
+let currentAnalysis = null;
+function openAnalysisDialog(key) {
+  const def = DIALOG_DEFS[key]; if (!def || !state.dataset) return;
+  currentAnalysis = key;
+  $('#modalTitle').textContent = def.title;
+  $('#modalError').style.display = 'none';
+  const numericOpts = numCols(), categoricalOpts = catCols();
+  const body = def.fields.map(f => {
+    const id = `f_${f.key}`;
+    if (f.type === 'select-num') return `<div class="formRow"><label>${f.label}</label><select id="${id}">${numericOpts.map(o => `<option>${escapeHtml(o)}</option>`).join('')}</select></div>`;
+    if (f.type === 'select-cat') return `<div class="formRow"><label>${f.label}</label><select id="${id}">${categoricalOpts.map(o => `<option>${escapeHtml(o)}</option>`).join('')}</select></div>`;
+    if (f.type === 'select-cat-optional') return `<div class="formRow"><label>${f.label}</label><select id="${id}"><option value=""></option>${categoricalOpts.map(o => `<option>${escapeHtml(o)}</option>`).join('')}</select></div>`;
+    if (f.type === 'multi-num') return `<div class="formRow"><label>${f.label}</label><select id="${id}" multiple size="${Math.min(8, Math.max(3, numericOpts.length))}" style="min-height:90px">${numericOpts.map(o => `<option selected>${escapeHtml(o)}</option>`).join('')}</select></div>`;
+    if (f.type === 'number') return `<div class="formRow"><label>${f.label}</label><input type="number" id="${id}" value="${f.default ?? 0}"></div>`;
+    return '';
+  }).join('');
+  $('#modalBody').innerHTML = body;
+  $('#modalAnalysis').classList.add('open');
+}
+function readDialogParams() {
+  const def = DIALOG_DEFS[currentAnalysis]; const params = {};
+  for (const f of def.fields) {
+    const el = document.getElementById(`f_${f.key}`); if (!el) continue;
+    if (f.type === 'multi-num') params[f.key] = Array.from(el.selectedOptions).map(o => o.value);
+    else if (f.type === 'number') params[f.key] = Number(el.value);
+    else params[f.key] = el.value || null;
+  }
+  return params;
+}
+
+// ============================================================
+// Analyses (implementations)
+// ============================================================
+function runAnalysis(type, params) {
+  switch (type) {
+    case 'descriptives': return runDescriptives(params);
+    case 'histogram':    return runHistogram(params);
+    case 'boxplot':      return runBoxplot(params);
+    case 'scatter':      return runScatter(params);
+    case 'correlation':  return runCorrelation(params);
+    case 'ttest_one':    return runTTestOne(params);
+    case 'ttest_two':    return runTTestTwo(params);
+    case 'anova':        return runAnova(params);
+    default: throw new Error('Análisis no soportado.');
+  }
+}
+
+function descStats(xs) {
+  if (!xs.length) return null;
+  const n = xs.length, m = mean(xs);
+  return {
+    n, mean: m, std: std(xs), min: Math.min(...xs),
+    Q1: quantile(xs, .25), median: median(xs),
+    Q3: quantile(xs, .75), max: Math.max(...xs),
+  };
+}
+
+function runDescriptives({ columns, group_by }) {
+  const cols = columns?.length ? columns : numCols();
+  if (!cols.length) throw new Error('Sin columnas numéricas.');
+  const rows = []; let headers;
+  if (group_by) {
+    headers = ['variable', 'group', 'n', 'mean', 'std', 'min', 'Q1', 'median', 'Q3', 'max'];
+    const groups = [...new Set(state.dataset.rows.map(r => r[group_by]))];
+    for (const c of cols) {
+      for (const g of groups) {
+        const xs = state.dataset.rows.filter(r => r[group_by] === g).map(r => r[c]).filter(isNum).map(toNum);
+        const s = descStats(xs); if (!s) continue;
+        rows.push([c, String(g), s.n, fmt(s.mean), fmt(s.std), fmt(s.min), fmt(s.Q1), fmt(s.median), fmt(s.Q3), fmt(s.max)]);
+      }
+    }
+  } else {
+    headers = ['variable', 'n', 'mean', 'std', 'min', 'Q1', 'median', 'Q3', 'max'];
+    for (const c of cols) {
+      const s = descStats(numericValues(c)); if (!s) continue;
+      rows.push([c, s.n, fmt(s.mean), fmt(s.std), fmt(s.min), fmt(s.Q1), fmt(s.median), fmt(s.Q3), fmt(s.max)]);
+    }
+  }
+  const charts = cols.slice(0, 4).map(c => {
+    const xs = numericValues(c);
+    return { id: uid(), title: `Histograma - ${c}`, traces: [{ type: 'histogram', x: xs, name: c }],
+             layout: { xaxis: { title: c }, yaxis: { title: 'count' }, bargap: .05 } };
+  });
+  return {
+    id: uid(), type: 'descriptives', title: 'Estadística descriptiva',
+    summary: `Descriptivos para ${cols.length} variable(s)${group_by ? ` agrupado por ${group_by}` : ''}.`,
+    tables: [{ id: uid(), title: 'Descriptivos', columns: headers, rows }],
+    charts, time: new Date(),
+  };
+}
+
+function runHistogram({ column }) {
+  const xs = numericValues(column);
+  if (!xs.length) throw new Error('Columna sin datos numéricos.');
+  const s = descStats(xs);
+  return {
+    id: uid(), type: 'histogram', title: `Histograma - ${column}`,
+    summary: `n=${s.n}, mean=${fmt(s.mean)}, std=${fmt(s.std)}.`,
+    tables: [{ id: uid(), title: 'Resumen', columns: ['n', 'mean', 'std', 'min', 'median', 'max'],
+               rows: [[s.n, fmt(s.mean), fmt(s.std), fmt(s.min), fmt(s.median), fmt(s.max)]] }],
+    charts: [{ id: uid(), title: `Histograma - ${column}`,
+               traces: [{ type: 'histogram', x: xs, name: column }],
+               layout: { xaxis: { title: column }, yaxis: { title: 'count' }, bargap: .05 } }],
+    time: new Date(),
+  };
+}
+
+function runBoxplot({ column, group_by }) {
+  if (group_by) {
+    const groups = [...new Set(state.dataset.rows.map(r => r[group_by]))];
+    const traces = groups.map(g => ({
+      type: 'box', name: String(g),
+      y: state.dataset.rows.filter(r => r[group_by] === g).map(r => r[column]).filter(isNum).map(toNum),
+      boxpoints: 'outliers',
+    }));
+    return {
+      id: uid(), type: 'boxplot', title: `Boxplot - ${column} by ${group_by}`,
+      summary: `Boxplot de ${column} agrupado por ${group_by}.`,
+      tables: [], charts: [{ id: uid(), title: `${column} por ${group_by}`, traces,
+                              layout: { yaxis: { title: column }, xaxis: { title: group_by } } }],
+      time: new Date(),
+    };
+  }
+  const xs = numericValues(column);
+  return {
+    id: uid(), type: 'boxplot', title: `Boxplot - ${column}`,
+    summary: `Boxplot de ${column}.`, tables: [],
+    charts: [{ id: uid(), title: `Boxplot - ${column}`,
+               traces: [{ type: 'box', y: xs, name: column, boxpoints: 'outliers' }],
+               layout: { yaxis: { title: column } } }],
+    time: new Date(),
+  };
+}
+
+function runScatter({ x, y }) {
+  const pairs = state.dataset.rows.map((r, i) => ({ x: r[x], y: r[y], id: state.dataset.rowIds[i] }))
+    .filter(p => isNum(p.x) && isNum(p.y));
+  const xs = pairs.map(p => +p.x), ys = pairs.map(p => +p.y);
+  if (xs.length < 2) throw new Error('Necesitan al menos 2 observaciones con ambas variables.');
+  const mx = mean(xs), my = mean(ys);
+  let sxx = 0, sxy = 0, syy = 0;
+  for (let i = 0; i < xs.length; i++) { sxx += (xs[i]-mx)**2; sxy += (xs[i]-mx)*(ys[i]-my); syy += (ys[i]-my)**2; }
+  const slope = sxy / sxx, intercept = my - slope * mx;
+  const ssRes = ys.reduce((a, yi, i) => a + (yi - (intercept + slope * xs[i]))**2, 0);
+  const r2 = 1 - ssRes / syy;
+  const n = xs.length;
+  const seSlope = Math.sqrt((ssRes / (n - 2)) / sxx);
+  const tStat = slope / seSlope;
+  const pVal = tPvalue2Sided(tStat, n - 2);
+  // Sorted line for chart
+  const ord = xs.map((_, i) => i).sort((a, b) => xs[a] - xs[b]);
+  const lineX = ord.map(i => xs[i]); const lineY = lineX.map(v => intercept + slope * v);
+  return {
+    id: uid(), type: 'scatter', title: `Scatter - ${y} ~ ${x}`,
+    summary: `OLS: ${y} = ${fmt(intercept)} + ${fmt(slope)} * ${x}.  R²=${fmt(r2)}, p=${fmt(pVal, 6)}, n=${n}.`,
+    tables: [{ id: uid(), title: 'OLS', columns: ['term', 'estimate', 'std_err', 't', 'p_value'],
+               rows: [['(Intercept)', fmt(intercept), '', '', ''],
+                      [x, fmt(slope), fmt(seSlope), fmt(tStat), fmt(pVal, 6)],
+                      ['R²', fmt(r2), '', '', ''], ['n', n, '', '', '']] }],
+    charts: [{
+      id: uid(), title: `${y} vs ${x}`,
+      traces: [
+        { type: 'scatter', mode: 'markers', x: xs, y: ys, name: 'data',
+          customdata: pairs.map(p => p.id),
+          hovertemplate: 'x=%{x}<br>y=%{y}<br>id=%{customdata}<extra></extra>' },
+        { type: 'scatter', mode: 'lines', x: lineX, y: lineY, name: 'fit', line: { color: '#dc2626' } },
+      ],
+      layout: { xaxis: { title: x }, yaxis: { title: y } },
+      row_ids: pairs.map(p => p.id),
+    }],
+    time: new Date(),
+  };
+}
+
+function runCorrelation({ columns }) {
+  const cols = columns?.length ? columns : numCols();
+  if (cols.length < 2) throw new Error('Mínimo 2 variables.');
+  const M = cols.map(() => Array(cols.length).fill(null));
+  for (let i = 0; i < cols.length; i++) {
+    for (let j = 0; j < cols.length; j++) {
+      if (i === j) { M[i][j] = 1; continue; }
+      const pairs = state.dataset.rows.map(r => [r[cols[i]], r[cols[j]]])
+        .filter(([a,b]) => isNum(a) && isNum(b)).map(([a,b]) => [+a,+b]);
+      if (pairs.length < 2) { M[i][j] = null; continue; }
+      const a = pairs.map(p => p[0]), b = pairs.map(p => p[1]);
+      const ma = mean(a), mb = mean(b);
+      let num = 0, da = 0, db = 0;
+      for (let k = 0; k < a.length; k++) { num += (a[k]-ma)*(b[k]-mb); da += (a[k]-ma)**2; db += (b[k]-mb)**2; }
+      M[i][j] = num / Math.sqrt(da * db);
+    }
+  }
+  return {
+    id: uid(), type: 'correlation', title: 'Matriz de correlación',
+    summary: `Correlación de Pearson para ${cols.length} variables.`,
+    tables: [{ id: uid(), title: 'Pearson r', columns: ['', ...cols],
+               rows: cols.map((c, i) => [c, ...M[i].map(v => v === null ? '' : fmt(v, 3))]) }],
+    charts: [{ id: uid(), title: 'Correlación',
+               traces: [{ type: 'heatmap', z: M, x: cols, y: cols, zmin: -1, zmax: 1,
+                          colorscale: 'RdBu', reversescale: true, hovertemplate: '%{y} vs %{x}: %{z:.3f}<extra></extra>' }],
+               layout: { yaxis: { autorange: 'reversed' } } }],
+    time: new Date(),
+  };
+}
+
+function runTTestOne({ column, mu0 }) {
+  const xs = numericValues(column);
+  if (xs.length < 2) throw new Error('Necesita ≥2 observaciones.');
+  const n = xs.length, m = mean(xs), s = std(xs);
+  const se = s / Math.sqrt(n); const t = (m - mu0) / se;
+  const p = tPvalue2Sided(t, n - 1);
+  const tcrit = 1.96; // approx 95%
+  return {
+    id: uid(), type: 'ttest_one', title: `t-test (una muestra) - ${column}`,
+    summary: `mean=${fmt(m)}, t=${fmt(t)}, p=${fmt(p, 6)} (H0: mu=${mu0}).`,
+    tables: [{ id: uid(), title: 't-test', columns: ['n', 'mean', 'std', 'se', 't', 'df', 'p_value', 'mu0'],
+               rows: [[n, fmt(m), fmt(s), fmt(se), fmt(t), n-1, fmt(p, 6), mu0]] }],
+    charts: [{ id: uid(), title: `Histograma - ${column}`,
+               traces: [{ type: 'histogram', x: xs, name: column }],
+               layout: { xaxis: { title: column }, yaxis: { title: 'count' },
+                         shapes: [{ type:'line', x0: mu0, x1: mu0, yref:'paper', y0:0, y1:1,
+                                    line:{ color:'red', dash:'dash' } }] } }],
+    time: new Date(),
+  };
+}
+
+function runTTestTwo({ value, group }) {
+  const groups = [...new Set(state.dataset.rows.map(r => r[group]).filter(v => v !== null))];
+  if (groups.length !== 2) throw new Error(`Necesita exactamente 2 grupos; encontrados: ${groups.length}.`);
+  const a = state.dataset.rows.filter(r => r[group] === groups[0]).map(r => r[value]).filter(isNum).map(toNum);
+  const b = state.dataset.rows.filter(r => r[group] === groups[1]).map(r => r[value]).filter(isNum).map(toNum);
+  if (a.length < 2 || b.length < 2) throw new Error('Cada grupo necesita ≥2 obs.');
+  const ma = mean(a), mb = mean(b), va = variance(a), vb = variance(b);
+  // Welch's t
+  const t = (ma - mb) / Math.sqrt(va/a.length + vb/b.length);
+  const df = (va/a.length + vb/b.length)**2 /
+             ((va/a.length)**2 / (a.length-1) + (vb/b.length)**2 / (b.length-1));
+  const p = tPvalue2Sided(t, df);
+  return {
+    id: uid(), type: 'ttest_two', title: `t-test - ${value} ~ ${group}`,
+    summary: `Welch t=${fmt(t)}, df=${fmt(df,2)}, p=${fmt(p, 6)}.`,
+    tables: [{ id: uid(), title: 't-test (Welch)',
+               columns: ['group_a','n_a','mean_a','std_a','group_b','n_b','mean_b','std_b','t','df','p_value'],
+               rows: [[String(groups[0]), a.length, fmt(ma), fmt(std(a)),
+                       String(groups[1]), b.length, fmt(mb), fmt(std(b)), fmt(t), fmt(df,2), fmt(p,6)]] }],
+    charts: [{ id: uid(), title: `${value} por ${group}`,
+               traces: [
+                 { type: 'box', y: a, name: String(groups[0]), boxpoints: 'outliers' },
+                 { type: 'box', y: b, name: String(groups[1]), boxpoints: 'outliers' }],
+               layout: { yaxis: { title: value } } }],
+    time: new Date(),
+  };
+}
+
+function runAnova({ response, factor }) {
+  const groups = [...new Set(state.dataset.rows.map(r => r[factor]).filter(v => v !== null))];
+  if (groups.length < 2) throw new Error('ANOVA necesita ≥2 grupos.');
+  const samples = groups.map(g => state.dataset.rows.filter(r => r[factor] === g).map(r => r[response]).filter(isNum).map(toNum));
+  if (samples.some(s => s.length < 2)) throw new Error('Cada grupo necesita ≥2 obs.');
+  const all = samples.flat(), grand = mean(all);
+  let ssB = 0, ssW = 0;
+  samples.forEach(s => { const m = mean(s); ssB += s.length * (m - grand)**2; ssW += s.reduce((a, v) => a + (v - m)**2, 0); });
+  const dfB = groups.length - 1, dfW = all.length - groups.length;
+  const msB = ssB / dfB, msW = ssW / dfW;
+  const F = msB / msW; const p = fSf(F, dfB, dfW);
+  return {
+    id: uid(), type: 'anova', title: `ANOVA: ${response} ~ ${factor}`,
+    summary: `F=${fmt(F)}, df=(${dfB}, ${dfW}), p=${fmt(p, 6)} para ${groups.length} grupos.`,
+    tables: [
+      { id: uid(), title: 'ANOVA table', columns: ['source','SS','df','MS','F','p_value'],
+        rows: [[factor, fmt(ssB), dfB, fmt(msB), fmt(F), fmt(p, 6)],
+               ['Residual', fmt(ssW), dfW, fmt(msW), '', '']] },
+      { id: uid(), title: 'Grupos', columns: ['group','n','mean','std'],
+        rows: samples.map((s, i) => [String(groups[i]), s.length, fmt(mean(s)), fmt(std(s))]) },
+    ],
+    charts: [{ id: uid(), title: `${response} por ${factor}`,
+               traces: samples.map((s, i) => ({ type: 'box', y: s, name: String(groups[i]), boxpoints: 'outliers' })),
+               layout: { yaxis: { title: response }, xaxis: { title: factor } } }],
+    time: new Date(),
+  };
+}
+
+// ============================================================
+// Rendering: results
+// ============================================================
+function renderResults() {
+  const list = $('#resultsList');
+  if (!state.results.length) {
+    list.innerHTML = '<p style="color: var(--fg-muted); text-align: center; margin-top: 40px;">Aún no hay análisis. Selecciona uno en el menú superior.</p>';
+    return;
+  }
+  list.innerHTML = '';
+  state.results.slice().reverse().forEach((r, i) => {
+    const collapsed = i > 0;
+    const card = document.createElement('section');
+    card.className = 'resultCard' + (collapsed ? ' collapsed' : '');
+    card.innerHTML = `
+      <header data-toggle="${r.id}">
+        <span class="kind">${r.type}</span>
+        <h3>${escapeHtml(r.title)}</h3>
+        <small>${r.time.toLocaleTimeString()}</small>
+      </header>
+      <div class="body">
+        <p class="summary">${escapeHtml(r.summary)}</p>
+        ${r.tables.map(t => `
+          <div style="margin: 10px 0;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong>${escapeHtml(t.title)}</strong>
+              <button data-export-table="${r.id}|${t.id}">CSV</button>
+            </div>
+            <div style="max-height: 320px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-top: 4px;">
+              <table>
+                <thead><tr>${t.columns.map(c => `<th>${escapeHtml(String(c))}</th>`).join('')}</tr></thead>
+                <tbody>${t.rows.map(row => `<tr>${row.map(c => `<td>${c === null || c === undefined ? '' : escapeHtml(String(c))}</td>`).join('')}</tr>`).join('')}</tbody>
+              </table>
+            </div>
+          </div>`).join('')}
+        ${r.charts.map(c => `
+          <div class="chart">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <strong>${escapeHtml(c.title)}</strong>
+              <button data-add-dash="${r.id}|${c.id}">Añadir al dashboard</button>
+            </div>
+            <div data-plot="${r.id}_${c.id}" style="height: 320px;"></div>
+          </div>`).join('')}
+        <div style="display: flex; gap: 8px; border-top: 1px solid var(--border); padding-top: 10px; margin-top: 12px; flex-wrap: wrap;">
+          <button data-rerun="${r.id}">Re-ejecutar</button>
+          <button data-export-html="${r.id}">Exportar HTML</button>
+        </div>
+      </div>`;
+    list.appendChild(card);
+    r.charts.forEach(c => renderPlot(`${r.id}_${c.id}`, c));
+  });
+  // Bind handlers
+  list.querySelectorAll('[data-toggle]').forEach(el => el.addEventListener('click', () => {
+    el.parentElement.classList.toggle('collapsed');
+  }));
+  list.querySelectorAll('[data-add-dash]').forEach(el => el.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const [rId, cId] = el.dataset.addDash.split('|');
+    state.dashboard.push({ id: uid(), kind: 'chart', resultId: rId, refId: cId });
+    logEvent('dashboard_add', { resultId: rId, chartId: cId });
+    if (currentTab() === 'dashboard') renderDashboard();
+  }));
+  list.querySelectorAll('[data-rerun]').forEach(el => el.addEventListener('click', () => {
+    const r = state.results.find(x => x.id === el.dataset.rerun); if (!r) return;
+    // Re-run is approximate: open dialog again
+    const map = {'descriptives':'descriptives','histogram':'histogram','boxplot':'boxplot','scatter':'scatter','correlation':'correlation','ttest_one':'ttest_one','ttest_two':'ttest_two','anova':'anova'};
+    openAnalysisDialog(map[r.type] ?? r.type);
+  }));
+  list.querySelectorAll('[data-export-table]').forEach(el => el.addEventListener('click', () => {
+    const [rId, tId] = el.dataset.exportTable.split('|');
+    const r = state.results.find(x => x.id === rId); const t = r?.tables.find(x => x.id === tId); if (!t) return;
+    downloadText(`${t.title.replace(/\s+/g,'_')}.csv`,
+      [t.columns.join(','), ...t.rows.map(row => row.map(c => csvEscape(c)).join(','))].join('\n'), 'text/csv');
+  }));
+  list.querySelectorAll('[data-export-html]').forEach(el => el.addEventListener('click', () => {
+    const r = state.results.find(x => x.id === el.dataset.exportHtml); if (!r) return;
+    downloadText(`${r.title}.html`, makeReportHTML([r]), 'text/html');
+  }));
+}
+
+function renderPlot(divKey, chart) {
+  const el = document.querySelector(`[data-plot="${divKey}"]`); if (!el) return;
+  const sel = state.selection;
+  const data = chart.traces.map(t => {
+    if (!t.customdata || sel.size === 0) return t;
+    const sizes = t.customdata.map(id => sel.has(id) ? 11 : 6);
+    const colors = t.customdata.map(id => sel.has(id) ? '#dc2626' : '#2563eb');
+    return { ...t, marker: { ...(t.marker || {}), size: sizes, color: colors,
+                              line: { width: t.customdata.map(id => sel.has(id) ? 2 : 0), color: 'white' } } };
+  });
+  Plotly.react(el, data, { autosize: true, margin: { t: 24, l: 50, r: 20, b: 40 }, ...chart.layout }, { responsive: true, displaylogo: false });
+  el.removeAllListeners?.('plotly_click');
+  el.on?.('plotly_click', evt => {
+    const ids = (evt.points || []).map(p => p.customdata).filter(Boolean);
+    if (!ids.length) return;
+    ids.forEach(id => state.selection.has(id) ? state.selection.delete(id) : state.selection.add(id));
+    rebroadcastBrushing();
+  });
+}
+
+// ============================================================
+// Dashboard
+// ============================================================
+function renderDashboard() {
+  $('#dashEmpty').style.display = state.dashboard.length ? 'none' : 'block';
+  const view = $('#dashboardView'); view.innerHTML = '';
+  state.dashboard.forEach(item => {
+    const r = state.results.find(x => x.id === item.resultId); if (!r) return;
+    const c = r.charts.find(x => x.id === item.refId); if (!c) return;
+    const tile = document.createElement('div'); tile.className = 'dashTile';
+    tile.innerHTML = `
+      <header><strong>${escapeHtml(c.title)}</strong><button class="close" data-rm="${item.id}">×</button></header>
+      <div class="tileBody"><div data-plot="dash_${item.id}" style="height: 280px;"></div></div>`;
+    view.appendChild(tile);
+    renderPlot(`dash_${item.id}`, c);
+  });
+  view.querySelectorAll('[data-rm]').forEach(b => b.addEventListener('click', () => {
+    state.dashboard = state.dashboard.filter(x => x.id !== b.dataset.rm);
+    renderDashboard();
+  }));
+}
+
+// ============================================================
+// Brushing
+// ============================================================
+function rebroadcastBrushing() {
+  // Update all visible plots and grid
+  state.results.forEach(r => r.charts.forEach(c => renderPlot(`${r.id}_${c.id}`, c)));
+  state.dashboard.forEach(item => {
+    const r = state.results.find(x => x.id === item.resultId); const c = r?.charts.find(x => x.id === item.refId);
+    if (c) renderPlot(`dash_${item.id}`, c);
+  });
+  renderGrid();
+}
+
+// ============================================================
+// Tabs
+// ============================================================
+function currentTab() { return document.querySelector('.tabs button.active')?.dataset.tab; }
+function switchTab(name) {
+  document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tabPanel').forEach(p => p.style.display = 'none');
+  if (name === 'data') $('#tabData').style.display = '';
+  if (name === 'results') { $('#tabResults').style.display = ''; renderResults(); }
+  if (name === 'dashboard') { $('#tabDashboard').style.display = ''; renderDashboard(); }
+}
+
+// ============================================================
+// Project save/load
+// ============================================================
+function saveProject() {
+  const project = {
+    schema_version: '1.0.0', app_version: 'html-standalone-0.1',
+    name: state.projectName, created_at: new Date().toISOString(),
+    dataset: state.dataset,
+    results: state.results.map(r => ({ ...r, time: r.time.toISOString() })),
+    dashboard: state.dashboard, history: state.history,
+  };
+  downloadText(`${state.projectName}.statstudio.json`, JSON.stringify(project, null, 2), 'application/json');
+  logEvent('project_saved');
+}
+function loadProject(text) {
+  try {
+    const p = JSON.parse(text);
+    if (p.dataset) {
+      state.dataset = p.dataset;
+      if (!state.dataset.rowIds) state.dataset.rowIds = state.dataset.rows.map((_, i) => `r${i}`);
+    }
+    state.results = (p.results || []).map(r => ({ ...r, time: new Date(r.time) }));
+    state.dashboard = p.dashboard || [];
+    state.history = p.history || [];
+    state.projectName = p.name || 'Loaded project';
+    $('#projectName').textContent = state.projectName;
+    $('#btnSave').disabled = !state.dataset; $('#analysisSelect').disabled = !state.dataset; $('#btnPrint').disabled = !state.dataset;
+    $('#emptyState').style.display = state.dataset ? 'none' : '';
+    $('#gridView').style.display = state.dataset ? 'block' : 'none';
+    renderGrid(); renderSidebar(); renderResults(); renderDashboard();
+    logEvent('project_loaded', { name: state.projectName });
+  } catch (e) {
+    alert('Archivo de proyecto inválido: ' + e.message);
+  }
+}
+
+// ============================================================
+// Report (printable HTML)
+// ============================================================
+function makeReportHTML(results) {
+  const parts = [`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${state.projectName}</title>`,
+    `<script src="https://cdn.plot.ly/plotly-2.30.0.min.js"><\/script>`,
+    `<style>body{font:14px system-ui,sans-serif;max-width:1000px;margin:24px auto;padding:0 16px;color:#243b53}
+     h1,h2{color:#102a43}table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
+     th,td{border:1px solid #d8dee5;padding:5px 8px;text-align:left}th{background:#eef2f7}
+     .summary{background:#eef2f7;border-left:4px solid #2563eb;padding:8px 12px}
+     @media print{.chart{break-inside:avoid;}}</style></head><body>`,
+    `<h1>${escapeHtml(state.projectName)}</h1><p><em>Generado ${new Date().toLocaleString()}</em></p>`];
+  results.forEach((r, i) => {
+    parts.push(`<h2>${i+1}. ${escapeHtml(r.title)}</h2><div class="summary">${escapeHtml(r.summary)}</div>`);
+    r.tables.forEach(t => {
+      parts.push(`<h3>${escapeHtml(t.title)}</h3><table><thead><tr>${t.columns.map(c => `<th>${escapeHtml(String(c))}</th>`).join('')}</tr></thead>`);
+      parts.push(`<tbody>${t.rows.map(row => `<tr>${row.map(c => `<td>${c === null || c === undefined ? '' : escapeHtml(String(c))}</td>`).join('')}</tr>`).join('')}</tbody></table>`);
+    });
+    r.charts.forEach((c, ci) => {
+      const cid = `c_${i}_${ci}`;
+      parts.push(`<div class="chart"><h4>${escapeHtml(c.title)}</h4><div id="${cid}" style="height:380px"></div>`);
+      parts.push(`<script>Plotly.newPlot('${cid}', ${JSON.stringify(c.traces)}, Object.assign({title:${JSON.stringify(c.title)}}, ${JSON.stringify(c.layout || {})}), {responsive:true});<\/script></div>`);
+    });
+  });
+  parts.push('</body></html>');
+  return parts.join('');
+}
+
+// ============================================================
+// Helpers
+// ============================================================
+function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s) { return escapeHtml(s).replace(/"/g, '&quot;'); }
+function csvEscape(v) { if (v === null || v === undefined) return ''; const s = String(v); return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s; }
+function downloadText(name, text, mime = 'text/plain') {
+  const blob = new Blob([text], { type: mime });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(a.href);
+}
+
+function addCalculatedColumn() {
+  const name = prompt('Nombre de la nueva columna:'); if (!name) return;
+  if (state.dataset.columns.some(c => c.name === name)) { alert('Ya existe.'); return; }
+  const formula = prompt('Expresión usando ${columna}. Operadores: + - * / ( )\nEjemplo: ${mpg} * 1.609', '${mpg} * 1');
+  if (!formula) return;
+  try {
+    state.dataset.rows = state.dataset.rows.map(r => {
+      const expr = formula.replace(/\$\{([^}]+)\}/g, (_, n) => { const v = Number(r[n]); return isFinite(v) ? String(v) : 'NaN'; });
+      if (!/^[\d+\-*/().\s eE]+$/.test(expr)) throw new Error('Expresión no permitida.');
+      const val = new Function(`"use strict"; return (${expr});`)();
+      return { ...r, [name]: isFinite(val) ? val : null };
+    });
+    state.dataset.columns.push({ name, type: 'numeric' });
+    logEvent('column_calculated', { name, formula });
+    renderGrid(); renderSidebar();
+  } catch (e) { alert('Error: ' + e.message); }
+}
+
+// ============================================================
+// Wire up
+// ============================================================
+$('#btnImport').addEventListener('click', () => $('#fileInput').click());
+$('#emptyImport').addEventListener('click', () => $('#fileInput').click());
+$('#fileInput').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return;
+  const text = await f.text();
+  state.projectName = f.name.replace(/\.csv$/i, '');
+  setDataset(state.projectName, parseCSV(text));
+});
+$('#btnLoad').addEventListener('click', () => $('#projectInput').click());
+$('#projectInput').addEventListener('change', async e => {
+  const f = e.target.files[0]; if (!f) return; loadProject(await f.text());
+});
+$('#btnSave').addEventListener('click', saveProject);
+$('#btnPrint').addEventListener('click', () => {
+  const html = makeReportHTML(state.results); const w = window.open('', '_blank');
+  if (!w) return; w.document.write(html); w.document.close(); setTimeout(() => w.print(), 700);
+});
+$('#analysisSelect').addEventListener('change', e => {
+  if (!e.target.value) return; openAnalysisDialog(e.target.value); e.target.value = '';
+});
+$$('.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+$('#btnAddCol').addEventListener('click', addCalculatedColumn);
+$('#btnExportCsv').addEventListener('click', () => {
+  if (!state.dataset) return;
+  downloadText(`${state.dataset.name}.csv`, toCSV(state.dataset), 'text/csv');
+});
+$('#gridSearch').addEventListener('input', renderGrid);
+$$('.sidebar [data-sample]').forEach(b => b.addEventListener('click', () => loadSample(b.dataset.sample)));
+$$('#modalAnalysis .close').forEach(b => b.addEventListener('click', () => $('#modalAnalysis').classList.remove('open')));
+$$('#modalHelp .close').forEach(b => b.addEventListener('click', () => $('#modalHelp').classList.remove('open')));
+$('#btnHelp').addEventListener('click', () => $('#modalHelp').classList.add('open'));
+$('#modalRun').addEventListener('click', () => {
+  try {
+    const params = readDialogParams();
+    const r = runAnalysis(currentAnalysis, params);
+    state.results.push(r);
+    logEvent('analysis_run', { type: r.type });
+    $('#modalAnalysis').classList.remove('open');
+    switchTab('results');
+  } catch (e) {
+    const err = $('#modalError'); err.textContent = 'Error: ' + e.message; err.style.display = 'block';
+  }
+});
+
+window.addEventListener('keydown', e => {
+  const cmd = e.ctrlKey || e.metaKey;
+  if (cmd && e.key.toLowerCase() === 'o') { e.preventDefault(); $('#fileInput').click(); }
+  else if (cmd && e.key.toLowerCase() === 's') { e.preventDefault(); if (state.dataset) saveProject(); }
+  else if (cmd && e.key.toLowerCase() === 'p') { e.preventDefault(); if (state.dataset) $('#btnPrint').click(); }
+  else if (e.key === '?') $('#modalHelp').classList.add('open');
+  else if (e.key === 'Escape') { $('#modalAnalysis').classList.remove('open'); $('#modalHelp').classList.remove('open'); }
+});
+
+// ============================================================
+// Sample datasets (small subsets, inline)
+// ============================================================
+const SAMPLES = {
+  iris: { name: 'iris', csv: `sepal_length,sepal_width,petal_length,petal_width,species
+5.1,3.5,1.4,0.2,setosa
+4.9,3.0,1.4,0.2,setosa
+4.7,3.2,1.3,0.2,setosa
+4.6,3.1,1.5,0.2,setosa
+5.0,3.6,1.4,0.2,setosa
+5.4,3.9,1.7,0.4,setosa
+4.6,3.4,1.4,0.3,setosa
+5.0,3.4,1.5,0.2,setosa
+4.4,2.9,1.4,0.2,setosa
+4.9,3.1,1.5,0.1,setosa
+7.0,3.2,4.7,1.4,versicolor
+6.4,3.2,4.5,1.5,versicolor
+6.9,3.1,4.9,1.5,versicolor
+5.5,2.3,4.0,1.3,versicolor
+6.5,2.8,4.6,1.5,versicolor
+5.7,2.8,4.5,1.3,versicolor
+6.3,3.3,4.7,1.6,versicolor
+4.9,2.4,3.3,1.0,versicolor
+6.6,2.9,4.6,1.3,versicolor
+5.2,2.7,3.9,1.4,versicolor
+6.3,3.3,6.0,2.5,virginica
+5.8,2.7,5.1,1.9,virginica
+7.1,3.0,5.9,2.1,virginica
+6.3,2.9,5.6,1.8,virginica
+6.5,3.0,5.8,2.2,virginica
+7.6,3.0,6.6,2.1,virginica
+4.9,2.5,4.5,1.7,virginica
+7.3,2.9,6.3,1.8,virginica
+6.7,2.5,5.8,1.8,virginica
+7.2,3.6,6.1,2.5,virginica` },
+  mtcars: { name: 'mtcars', csv: `mpg,cyl,disp,hp,drat,wt,qsec,vs,am,gear,carb
+21.0,6,160.0,110,3.90,2.620,16.46,0,1,4,4
+21.0,6,160.0,110,3.90,2.875,17.02,0,1,4,4
+22.8,4,108.0,93,3.85,2.320,18.61,1,1,4,1
+21.4,6,258.0,110,3.08,3.215,19.44,1,0,3,1
+18.7,8,360.0,175,3.15,3.440,17.02,0,0,3,2
+18.1,6,225.0,105,2.76,3.460,20.22,1,0,3,1
+14.3,8,360.0,245,3.21,3.570,15.84,0,0,3,4
+24.4,4,146.7,62,3.69,3.190,20.00,1,0,4,2
+22.8,4,140.8,95,3.92,3.150,22.90,1,0,4,2
+19.2,6,167.6,123,3.92,3.440,18.30,1,0,4,4
+17.8,6,167.6,123,3.92,3.440,18.90,1,0,4,4
+16.4,8,275.8,180,3.07,4.070,17.40,0,0,3,3
+17.3,8,275.8,180,3.07,3.730,17.60,0,0,3,3
+15.2,8,275.8,180,3.07,3.780,18.00,0,0,3,3
+10.4,8,472.0,205,2.93,5.250,17.98,0,0,3,4
+10.4,8,460.0,215,3.00,5.424,17.82,0,0,3,4
+14.7,8,440.0,230,3.23,5.345,17.42,0,0,3,4
+32.4,4,78.7,66,4.08,2.200,19.47,1,1,4,1
+30.4,4,75.7,52,4.93,1.615,18.52,1,1,4,2
+33.9,4,71.1,65,4.22,1.835,19.90,1,1,4,1
+21.5,4,120.1,97,3.70,2.465,20.01,1,0,3,1
+15.5,8,318.0,150,2.76,3.520,16.87,0,0,3,2
+15.2,8,304.0,150,3.15,3.435,17.30,0,0,3,2
+13.3,8,350.0,245,3.73,3.840,15.41,0,0,3,4
+19.2,8,400.0,175,3.08,3.845,17.05,0,0,3,2
+27.3,4,79.0,66,4.08,1.935,18.90,1,1,4,1
+26.0,4,120.3,91,4.43,2.140,16.70,0,1,5,2
+30.4,4,95.1,113,3.77,1.513,16.90,1,1,5,2
+15.8,8,351.0,264,4.22,3.170,14.50,0,1,5,4
+19.7,6,145.0,175,3.62,2.770,15.50,0,1,5,6
+15.0,8,301.0,335,3.54,3.570,14.60,0,1,5,8
+21.4,4,121.0,109,4.11,2.780,18.60,1,1,4,2` },
+  tooth: { name: 'ToothGrowth', csv: `len,supp,dose
+4.2,VC,0.5
+11.5,VC,0.5
+7.3,VC,0.5
+5.8,VC,0.5
+6.4,VC,0.5
+10.0,VC,0.5
+11.2,VC,0.5
+11.2,VC,0.5
+5.2,VC,0.5
+7.0,VC,0.5
+16.5,VC,1.0
+16.5,VC,1.0
+15.2,VC,1.0
+17.3,VC,1.0
+22.5,VC,1.0
+17.3,VC,1.0
+13.6,VC,1.0
+14.5,VC,1.0
+18.8,VC,1.0
+15.5,VC,1.0
+23.6,VC,2.0
+18.5,VC,2.0
+33.9,VC,2.0
+25.5,VC,2.0
+26.4,VC,2.0
+32.5,VC,2.0
+26.7,VC,2.0
+21.5,VC,2.0
+23.3,VC,2.0
+29.5,VC,2.0
+15.2,OJ,0.5
+21.5,OJ,0.5
+17.6,OJ,0.5
+9.7,OJ,0.5
+14.5,OJ,0.5
+10.0,OJ,0.5
+8.2,OJ,0.5
+9.4,OJ,0.5
+16.5,OJ,0.5
+9.7,OJ,0.5
+19.7,OJ,1.0
+23.3,OJ,1.0
+23.6,OJ,1.0
+26.4,OJ,1.0
+20.0,OJ,1.0
+25.2,OJ,1.0
+25.8,OJ,1.0
+21.2,OJ,1.0
+14.5,OJ,1.0
+27.3,OJ,1.0
+25.5,OJ,2.0
+26.4,OJ,2.0
+22.4,OJ,2.0
+24.5,OJ,2.0
+24.8,OJ,2.0
+30.9,OJ,2.0
+26.4,OJ,2.0
+27.3,OJ,2.0
+29.4,OJ,2.0
+23.0,OJ,2.0` },
+};
+
+// Initial render
+renderSidebar();
+</script>
+</body>
+</html>
