@@ -103,6 +103,16 @@
   .formRow > input, .formRow > select { flex: 1; }
   .error { color: var(--danger); background: #fef2f2; border: 1px solid #fecaca; padding: 8px; border-radius: 6px; margin: 8px 16px; }
 
+  .newColRow {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 2.2fr 28px;
+    gap: 6px; margin-bottom: 6px; align-items: center;
+  }
+  .newColRow input, .newColRow select, .newColRow textarea { width: 100%; font-size: 12px; }
+  .newColRow textarea { resize: vertical; min-height: 28px; padding: 4px 6px; border: 1px solid var(--border); border-radius: var(--radius); font-family: ui-monospace, Menlo, monospace; }
+  .newColRow button { background: transparent; border: none; color: var(--danger); font-size: 18px; padding: 0; }
+  .newColHeader { display: grid; grid-template-columns: 1.2fr 1fr 2.2fr 28px; gap: 6px; font-size: 11px; color: var(--fg-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px; }
+
   .dashGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 12px; }
   .dashTile { background: white; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
   .dashTile header { display: flex; justify-content: space-between; align-items: center; padding: 6px 12px; border-bottom: 1px solid var(--border); background: var(--bg-soft); }
@@ -123,6 +133,7 @@
     </div>
     <div class="actions">
       <button id="btnImport">Importar CSV</button>
+      <button id="btnNew">Nuevo dataset</button>
       <button id="btnSave" disabled>Guardar proyecto</button>
       <button id="btnLoad">Cargar proyecto</button>
       <button id="btnPrint" disabled>Reporte HTML</button>
@@ -174,8 +185,11 @@
       <section id="tabData" class="tabPanel">
         <div class="empty" id="emptyState">
           <h2>Bienvenido a StatStudio Web</h2>
-          <p>Versión HTML standalone — sin servidor, sin build. Importa un CSV o carga una muestra.</p>
-          <button class="primary" id="emptyImport">Importar CSV</button>
+          <p>Versión HTML standalone — sin servidor, sin build. Importa un CSV, carga una muestra o crea un dataset desde cero.</p>
+          <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
+            <button class="primary" id="emptyImport">Importar CSV</button>
+            <button id="emptyNew">Crear dataset por columnas</button>
+          </div>
           <p style="color: var(--fg-muted); margin-top: 12px;">
             Atajos: <kbd>Ctrl/Cmd+O</kbd> importar &middot; <kbd>Ctrl/Cmd+S</kbd> guardar &middot; <kbd>?</kbd> ayuda
           </p>
@@ -183,7 +197,10 @@
         <div id="gridView" style="display: none;">
           <div class="gridControls">
             <input type="search" id="gridSearch" placeholder="Buscar en grid…">
+            <button id="btnAddRow">+ Fila</button>
+            <button id="btnAddBlankCol">+ Columna</button>
             <button id="btnAddCol">+ Columna calculada</button>
+            <button id="btnDelRows" disabled>Eliminar filas</button>
             <button id="btnExportCsv">Exportar CSV</button>
             <span style="flex:1"></span>
             <small id="selCount">Selección: 0 fila(s)</small>
@@ -216,6 +233,38 @@
     <div class="footer">
       <button class="close">Cancelar</button>
       <button class="primary" id="modalRun">Ejecutar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modalBackdrop" id="modalNew">
+  <div class="modal" style="max-width: 760px;">
+    <header><h3>Crear dataset por columnas</h3><button class="close">×</button></header>
+    <div class="body">
+      <div class="formRow">
+        <label>Nombre del dataset</label>
+        <input type="text" id="newDsName" value="dataset_1">
+      </div>
+      <div class="formRow">
+        <label>Filas iniciales</label>
+        <input type="number" id="newDsRows" value="10" min="0" max="10000">
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin: 10px 0 6px;">
+        <strong>Columnas</strong>
+        <div>
+          <button id="newDsAddCol">+ columna</button>
+          <button id="newDsAdd5">+5 columnas</button>
+        </div>
+      </div>
+      <p style="color: var(--fg-muted); font-size: 12px; margin: 0 0 8px;">
+        Pega valores en "valores iniciales" separados por <kbd>,</kbd> <kbd>;</kbd> o nueva línea. Si dejas vacío, la columna queda en blanco.
+      </p>
+      <div id="newDsCols"></div>
+    </div>
+    <div class="error" id="newDsError" style="display: none;"></div>
+    <div class="footer">
+      <button class="close">Cancelar</button>
+      <button class="primary" id="newDsCreate">Crear dataset</button>
     </div>
   </div>
 </div>
@@ -523,6 +572,7 @@ function renderGrid() {
     });
   });
   $('#selCount').textContent = `Selección: ${state.selection.size} fila(s)`;
+  const delBtn = $('#btnDelRows'); if (delBtn) delBtn.disabled = state.selection.size === 0;
 }
 
 function cellHtml(v) {
@@ -1118,6 +1168,15 @@ $('#analysisSelect').addEventListener('change', e => {
 });
 $$('.tabs button').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
 $('#btnAddCol').addEventListener('click', addCalculatedColumn);
+$('#btnNew').addEventListener('click', openNewDatasetDialog);
+$('#emptyNew').addEventListener('click', openNewDatasetDialog);
+$('#btnAddRow').addEventListener('click', addRow);
+$('#btnAddBlankCol').addEventListener('click', addBlankColumn);
+$('#btnDelRows').addEventListener('click', deleteSelectedRows);
+$('#newDsAddCol').addEventListener('click', () => addNewColumnRow('', 'numeric'));
+$('#newDsAdd5').addEventListener('click', () => { for (let i = 0; i < 5; i++) addNewColumnRow('', 'numeric'); });
+$('#newDsCreate').addEventListener('click', createDatasetFromBuilder);
+$$('#modalNew .close').forEach(b => b.addEventListener('click', () => $('#modalNew').classList.remove('open')));
 $('#btnExportCsv').addEventListener('click', () => {
   if (!state.dataset) return;
   downloadText(`${state.dataset.name}.csv`, toCSV(state.dataset), 'text/csv');
@@ -1146,8 +1205,146 @@ window.addEventListener('keydown', e => {
   else if (cmd && e.key.toLowerCase() === 's') { e.preventDefault(); if (state.dataset) saveProject(); }
   else if (cmd && e.key.toLowerCase() === 'p') { e.preventDefault(); if (state.dataset) $('#btnPrint').click(); }
   else if (e.key === '?') $('#modalHelp').classList.add('open');
-  else if (e.key === 'Escape') { $('#modalAnalysis').classList.remove('open'); $('#modalHelp').classList.remove('open'); }
+  else if (e.key === 'Escape') {
+    $('#modalAnalysis').classList.remove('open');
+    $('#modalHelp').classList.remove('open');
+    $('#modalNew').classList.remove('open');
+  }
 });
+
+// ============================================================
+// New dataset builder (manual, by columns)
+// ============================================================
+let newColCounter = 0;
+
+function openNewDatasetDialog() {
+  $('#newDsError').style.display = 'none';
+  $('#newDsName').value = `dataset_${state.results.length + 1}`;
+  $('#newDsRows').value = '10';
+  $('#newDsCols').innerHTML = `<div class="newColHeader"><div>Nombre</div><div>Tipo</div><div>Valores iniciales (opcional)</div><div></div></div>`;
+  newColCounter = 0;
+  addNewColumnRow('A', 'numeric');
+  addNewColumnRow('B', 'numeric');
+  addNewColumnRow('grupo', 'categorical');
+  $('#modalNew').classList.add('open');
+}
+
+function addNewColumnRow(name = '', type = 'numeric', values = '') {
+  newColCounter++;
+  const id = newColCounter;
+  const row = document.createElement('div');
+  row.className = 'newColRow';
+  row.dataset.colId = id;
+  row.innerHTML = `
+    <input type="text" data-field="name" placeholder="nombre" value="${escapeAttr(name || '')}">
+    <select data-field="type">
+      ${TYPES.map(t => `<option value="${t}"${t === type ? ' selected' : ''}>${t}</option>`).join('')}
+    </select>
+    <textarea data-field="values" rows="1" placeholder="ej:  1, 2, 3, 4">${escapeHtml(values || '')}</textarea>
+    <button data-remove="${id}" title="Quitar">×</button>`;
+  $('#newDsCols').appendChild(row);
+  row.querySelector('[data-remove]').addEventListener('click', () => row.remove());
+}
+
+function buildDatasetFromBuilder() {
+  const name = $('#newDsName').value.trim() || 'dataset';
+  const nRows = Math.max(0, parseInt($('#newDsRows').value, 10) || 0);
+  const rowsEls = $('#newDsCols').querySelectorAll('.newColRow');
+  if (!rowsEls.length) throw new Error('Agrega al menos una columna.');
+
+  const cols = [];
+  const colData = [];
+  const seen = new Set();
+  rowsEls.forEach(rEl => {
+    const cname = rEl.querySelector('[data-field="name"]').value.trim();
+    if (!cname) throw new Error('Cada columna necesita un nombre.');
+    if (seen.has(cname)) throw new Error(`Nombre de columna duplicado: "${cname}".`);
+    seen.add(cname);
+    const ctype = rEl.querySelector('[data-field="type"]').value;
+    const raw = rEl.querySelector('[data-field="values"]').value;
+    const values = raw.split(/[,;\n\t]+/).map(s => s.trim()).filter(s => s.length > 0);
+    cols.push({ name: cname, type: ctype });
+    colData.push({ type: ctype, values });
+  });
+
+  const maxFromValues = colData.reduce((m, c) => Math.max(m, c.values.length), 0);
+  const totalRows = Math.max(nRows, maxFromValues);
+
+  const rows = [];
+  for (let i = 0; i < totalRows; i++) {
+    const row = {};
+    cols.forEach((col, ci) => { row[col.name] = coerceValue(colData[ci].values[i], col.type); });
+    rows.push(row);
+  }
+  return { columns: cols, rows };
+}
+
+function coerceValue(raw, type) {
+  if (raw === undefined || raw === null || raw === '') return null;
+  const s = String(raw).trim();
+  if (s === '' || s.toLowerCase() === 'na' || s.toLowerCase() === 'null') return null;
+  switch (type) {
+    case 'numeric': { const n = Number(s); return isFinite(n) ? n : null; }
+    case 'integer': { const n = Number(s); return (isFinite(n) && Number.isInteger(n)) ? n : (isFinite(n) ? Math.trunc(n) : null); }
+    case 'boolean':
+      if (/^(true|1|yes|y|t)$/i.test(s)) return true;
+      if (/^(false|0|no|n|f)$/i.test(s)) return false;
+      return null;
+    case 'datetime': { const d = new Date(s); return isNaN(d) ? s : d.toISOString(); }
+    default: return s;
+  }
+}
+
+function createDatasetFromBuilder() {
+  try {
+    const name = $('#newDsName').value.trim() || 'dataset';
+    const parsed = buildDatasetFromBuilder();
+    state.projectName = name;
+    setDataset(name, parsed);
+    $('#modalNew').classList.remove('open');
+    switchTab('data');
+  } catch (e) {
+    const err = $('#newDsError');
+    err.textContent = 'Error: ' + e.message;
+    err.style.display = 'block';
+  }
+}
+
+// ============================================================
+// Grid: add row / add blank column / delete selected rows
+// ============================================================
+function addRow() {
+  if (!state.dataset) return;
+  const row = {};
+  state.dataset.columns.forEach(c => { row[c.name] = null; });
+  state.dataset.rows.push(row);
+  state.dataset.rowIds.push(`r${state.dataset.rowIds.length}_${uid()}`);
+  logEvent('row_added');
+  renderGrid(); renderSidebar();
+}
+
+function addBlankColumn() {
+  if (!state.dataset) return;
+  const name = prompt('Nombre de la nueva columna:');
+  if (!name) return;
+  if (state.dataset.columns.some(c => c.name === name)) { alert('Ya existe.'); return; }
+  const type = prompt(`Tipo (${TYPES.join(', ')}):`, 'numeric');
+  if (!type || !TYPES.includes(type)) { alert('Tipo inválido.'); return; }
+  state.dataset.columns.push({ name, type });
+  state.dataset.rows.forEach(r => { r[name] = null; });
+  logEvent('column_added', { name, type });
+  renderGrid(); renderSidebar();
+}
+
+function deleteSelectedRows() {
+  if (!state.dataset || state.selection.size === 0) return;
+  const keep = state.dataset.rowIds.map((id, i) => state.selection.has(id) ? -1 : i).filter(i => i >= 0);
+  state.dataset.rows = keep.map(i => state.dataset.rows[i]);
+  state.dataset.rowIds = keep.map(i => state.dataset.rowIds[i]);
+  logEvent('rows_deleted', { count: state.selection.size });
+  state.selection.clear();
+  renderGrid(); renderSidebar();
+}
 
 // ============================================================
 // Sample datasets (small subsets, inline)
