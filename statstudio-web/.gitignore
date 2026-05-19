@@ -1,0 +1,16 @@
+node_modules/
+dist/
+.vite/
+playwright-report/
+test-results/
+
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+*.egg-info/
+backend.log
+tsconfig.tsbuildinfo

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://statstudio.local/schemas/project.schema.json",
+  "title": "StatStudio Project File",
+  "type": "object",
+  "required": ["schema_version", "name", "created_at"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "app_version": {"type": "string"},
+    "name": {"type": "string"},
+    "created_at": {"type": "string"},
+    "datasets": {"type": "array"},
+    "dataset_meta": {"type": "array"},
+    "analyses": {"type": "array"},
+    "results": {"type": "array"},
+    "dashboards": {"type": "array"},
+    "history": {"type": "array"},
+    "preferences": {"type": "object"}
+  }
+}

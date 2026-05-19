@@ -1,0 +1,59 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  gap: 8px;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  border-radius: var(--radius);
+}
+.controls input { flex: 0 0 220px; }
+.spacer { flex: 1; }
+
+.typeBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  max-height: 64px;
+  overflow-y: auto;
+}
+.typePill {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 12px;
+}
+.typePill > button {
+  border: none;
+  background: transparent;
+  padding: 3px 8px;
+  color: var(--fg-strong);
+  font-weight: 500;
+}
+.typePill > select {
+  border: none;
+  border-left: 1px solid var(--border);
+  background: var(--bg-soft);
+  padding: 2px 4px;
+  font-size: 11px;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.grid {
+  flex: 1;
+  min-height: 320px;
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}

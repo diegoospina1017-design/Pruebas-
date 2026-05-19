@@ -1,0 +1,78 @@
+:root {
+  --bg-app: #f7f9fc;
+  --bg-panel: #ffffff;
+  --bg-soft: #eef2f7;
+  --bg-header: #243b53;
+  --bg-toolbar: #334e68;
+  --fg-strong: #102a43;
+  --fg: #243b53;
+  --fg-muted: #627d98;
+  --fg-on-dark: #f0f4f8;
+  --accent: #2563eb;
+  --accent-soft: #dbeafe;
+  --success: #047857;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --border: #d8dee5;
+  --border-strong: #9fb3c8;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 2px 8px rgba(0, 0, 0, 0.04);
+  --radius: 6px;
+  --font-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+
+body {
+  font-family: var(--font-base);
+  background: var(--bg-app);
+  color: var(--fg);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+  background: var(--bg-panel);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+}
+button:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+button.primary {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+}
+button.primary:hover { background: #1e4fb8; color: white; }
+
+input, select, textarea {
+  font: inherit;
+  padding: 5px 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: white;
+  color: var(--fg);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--accent-soft);
+  border-color: var(--accent);
+}
+
+label { font-size: 13px; color: var(--fg); }
+
+a { color: var(--accent); }
+
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { border: 1px solid var(--border); padding: 5px 8px; text-align: left; }
+th { background: var(--bg-soft); }
+
+@media print {
+  .no-print, .no-print * { display: none !important; }
+  body { background: white; }
+}

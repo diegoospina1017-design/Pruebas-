@@ -1,0 +1,28 @@
+.empty { text-align: center; color: var(--fg-muted); margin-top: 60px; }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+  gap: 12px;
+}
+
+.tile {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.tile header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+}
+.tile header strong { color: var(--fg-strong); font-size: 13px; }
+.tile header button { background: transparent; border: none; font-size: 16px; line-height: 1; }
+
+.tileBody { padding: 8px; min-height: 220px; }
+.analysisBlock { display: flex; flex-direction: column; gap: 6px; }
+.summary { background: var(--bg-soft); padding: 6px 10px; border-radius: 4px; margin: 0; font-size: 12px; }

@@ -1,0 +1,24 @@
+.drop {
+  border: 2px dashed var(--border-strong);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  color: var(--fg-muted);
+  margin-bottom: 14px;
+}
+.dragOver { border-color: var(--accent); background: var(--accent-soft); color: var(--accent); }
+.drop p { margin: 0 0 8px 0; }
+.fileBtn {
+  display: inline-block;
+  background: var(--accent);
+  color: white;
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.fileBtn input { display: none; }
+
+.preview h4 { margin: 0 0 6px 0; color: var(--fg-strong); }
+.tableWrap { max-height: 280px; overflow: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+.tableWrap table { font-size: 12px; }
+.tableWrap th { background: var(--bg-soft); position: sticky; top: 0; }
