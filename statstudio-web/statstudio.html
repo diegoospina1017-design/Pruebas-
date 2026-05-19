@@ -5,6 +5,7 @@
 <title>StatStudio Web - HTML standalone</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
 <style>
   :root {
     --bg-app: #f7f9fc; --bg-panel: #ffffff; --bg-soft: #eef2f7;
@@ -132,7 +133,7 @@
       <small style="color: #cbd2d9; border-left: 1px solid #486581; padding-left: 10px; margin-left: 10px;" id="projectName">Untitled project</small>
     </div>
     <div class="actions">
-      <button id="btnImport">Importar CSV</button>
+      <button id="btnImport">Importar CSV/Excel</button>
       <button id="btnNew">Nuevo dataset</button>
       <button id="btnSave" disabled>Guardar proyecto</button>
       <button id="btnLoad">Cargar proyecto</button>
@@ -185,9 +186,9 @@
       <section id="tabData" class="tabPanel">
         <div class="empty" id="emptyState">
           <h2>Bienvenido a StatStudio Web</h2>
-          <p>Versión HTML standalone — sin servidor, sin build. Importa un CSV, carga una muestra o crea un dataset desde cero.</p>
+          <p>Versión HTML standalone — sin servidor, sin build. Importa un CSV/Excel, carga una muestra o crea un dataset desde cero.</p>
           <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;">
-            <button class="primary" id="emptyImport">Importar CSV</button>
+            <button class="primary" id="emptyImport">Importar CSV / Excel</button>
             <button id="emptyNew">Crear dataset por columnas</button>
           </div>
           <p style="color: var(--fg-muted); margin-top: 12px;">
@@ -202,6 +203,7 @@
             <button id="btnAddCol">+ Columna calculada</button>
             <button id="btnDelRows" disabled>Eliminar filas</button>
             <button id="btnExportCsv">Exportar CSV</button>
+            <button id="btnExportXlsx">Exportar Excel</button>
             <span style="flex:1"></span>
             <small id="selCount">Selección: 0 fila(s)</small>
           </div>
@@ -269,6 +271,27 @@
   </div>
 </div>
 
+<div class="modalBackdrop" id="modalSheet">
+  <div class="modal" style="max-width: 520px;">
+    <header><h3>Elegir hoja del Excel</h3><button class="close">×</button></header>
+    <div class="body">
+      <p style="margin: 0 0 10px;" id="sheetFileName"></p>
+      <div class="formRow">
+        <label>Hoja</label>
+        <select id="sheetSelect"></select>
+      </div>
+      <p class="hint" style="color: var(--fg-muted); font-size: 12px;">
+        La primera fila se toma como encabezado.
+      </p>
+    </div>
+    <div class="error" id="sheetError" style="display: none;"></div>
+    <div class="footer">
+      <button class="close">Cancelar</button>
+      <button class="primary" id="sheetImport">Importar hoja</button>
+    </div>
+  </div>
+</div>
+
 <div class="modalBackdrop" id="modalHelp">
   <div class="modal" style="max-width: 480px;">
     <header><h3>Atajos</h3><button class="close">×</button></header>
@@ -284,7 +307,7 @@
   </div>
 </div>
 
-<input type="file" id="fileInput" accept=".csv" style="display: none;">
+<input type="file" id="fileInput" accept=".csv,.xlsx,.xls,.xlsm,.ods" style="display: none;">
 <input type="file" id="projectInput" accept=".json" style="display: none;">
 
 <script>
@@ -1150,9 +1173,8 @@ $('#btnImport').addEventListener('click', () => $('#fileInput').click());
 $('#emptyImport').addEventListener('click', () => $('#fileInput').click());
 $('#fileInput').addEventListener('change', async e => {
   const f = e.target.files[0]; if (!f) return;
-  const text = await f.text();
-  state.projectName = f.name.replace(/\.csv$/i, '');
-  setDataset(state.projectName, parseCSV(text));
+  e.target.value = '';  // allow re-importing the same file
+  await importFile(f);
 });
 $('#btnLoad').addEventListener('click', () => $('#projectInput').click());
 $('#projectInput').addEventListener('change', async e => {
@@ -1177,9 +1199,31 @@ $('#newDsAddCol').addEventListener('click', () => addNewColumnRow('', 'numeric')
 $('#newDsAdd5').addEventListener('click', () => { for (let i = 0; i < 5; i++) addNewColumnRow('', 'numeric'); });
 $('#newDsCreate').addEventListener('click', createDatasetFromBuilder);
 $$('#modalNew .close').forEach(b => b.addEventListener('click', () => $('#modalNew').classList.remove('open')));
+$$('#modalSheet .close').forEach(b => b.addEventListener('click', () => {
+  $('#modalSheet').classList.remove('open'); pendingWorkbook = null;
+}));
+$('#sheetImport').addEventListener('click', () => {
+  if (!pendingWorkbook) return;
+  try {
+    importSheet(pendingWorkbook.wb, $('#sheetSelect').value, pendingWorkbook.baseName);
+    $('#modalSheet').classList.remove('open');
+    pendingWorkbook = null;
+  } catch (e) {
+    const err = $('#sheetError'); err.textContent = 'Error: ' + (e.message || e); err.style.display = 'block';
+  }
+});
 $('#btnExportCsv').addEventListener('click', () => {
   if (!state.dataset) return;
   downloadText(`${state.dataset.name}.csv`, toCSV(state.dataset), 'text/csv');
+});
+$('#btnExportXlsx').addEventListener('click', () => {
+  if (!state.dataset || typeof XLSX === 'undefined') return;
+  const cols = state.dataset.columns.map(c => c.name);
+  const aoa = [cols, ...state.dataset.rows.map(r => cols.map(c => r[c]))];
+  const ws = XLSX.utils.aoa_to_sheet(aoa);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'data');
+  XLSX.writeFile(wb, `${state.dataset.name}.xlsx`);
 });
 $('#gridSearch').addEventListener('input', renderGrid);
 $$('.sidebar [data-sample]').forEach(b => b.addEventListener('click', () => loadSample(b.dataset.sample)));
@@ -1209,8 +1253,110 @@ window.addEventListener('keydown', e => {
     $('#modalAnalysis').classList.remove('open');
     $('#modalHelp').classList.remove('open');
     $('#modalNew').classList.remove('open');
+    $('#modalSheet').classList.remove('open');
   }
 });
+
+// ============================================================
+// File import dispatch (CSV vs Excel)
+// ============================================================
+let pendingWorkbook = null;  // holds parsed workbook + filename while user picks a sheet
+
+async function importFile(file) {
+  const name = file.name;
+  const lower = name.toLowerCase();
+  const baseName = name.replace(/\.[^./]+$/, '');
+  const isExcel = /\.(xlsx|xls|xlsm|ods)$/i.test(lower);
+  try {
+    if (isExcel) {
+      if (typeof XLSX === 'undefined') throw new Error('SheetJS (xlsx) no se cargó; revisa tu conexión.');
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, { type: 'array', cellDates: true });
+      if (!wb.SheetNames.length) throw new Error('El libro no tiene hojas.');
+      if (wb.SheetNames.length === 1) {
+        importSheet(wb, wb.SheetNames[0], baseName);
+      } else {
+        openSheetPicker(wb, baseName, name);
+      }
+    } else {
+      const text = await file.text();
+      state.projectName = baseName;
+      setDataset(baseName, parseCSV(text));
+    }
+  } catch (e) {
+    alert('Error al importar el archivo: ' + (e.message || e));
+  }
+}
+
+function importSheet(wb, sheetName, baseName) {
+  const ws = wb.Sheets[sheetName];
+  if (!ws) throw new Error(`Hoja "${sheetName}" no encontrada.`);
+  // header:1 → array of arrays; we control header inference ourselves
+  const aoa = XLSX.utils.sheet_to_json(ws, {
+    header: 1,
+    defval: null,
+    raw: true,
+    blankrows: false,
+  });
+  if (!aoa.length) throw new Error(`La hoja "${sheetName}" está vacía.`);
+  const parsed = arrayOfArraysToDataset(aoa);
+  const dsName = wb.SheetNames.length > 1 ? `${baseName}_${sheetName}` : baseName;
+  state.projectName = dsName;
+  setDataset(dsName, parsed);
+  logEvent('excel_imported', { sheet: sheetName, n_rows: parsed.rows.length });
+}
+
+function arrayOfArraysToDataset(aoa) {
+  // First non-empty row → header
+  let headerRowIdx = 0;
+  while (headerRowIdx < aoa.length && !rowHasAnyValue(aoa[headerRowIdx])) headerRowIdx++;
+  if (headerRowIdx >= aoa.length) throw new Error('No se encontraron encabezados.');
+  const rawHeader = aoa[headerRowIdx];
+  const header = rawHeader.map((h, i) => {
+    const s = (h === null || h === undefined || h === '') ? `col_${i+1}` : String(h).trim();
+    return s || `col_${i+1}`;
+  });
+  // ensure uniqueness
+  const seen = new Map();
+  const uniq = header.map(h => {
+    const c = (seen.get(h) || 0) + 1;
+    seen.set(h, c);
+    return c === 1 ? h : `${h}_${c}`;
+  });
+  const rows = [];
+  for (let i = headerRowIdx + 1; i < aoa.length; i++) {
+    const r = aoa[i];
+    if (!rowHasAnyValue(r)) continue;
+    const obj = {};
+    uniq.forEach((h, ci) => {
+      let v = r[ci];
+      if (v instanceof Date) v = v.toISOString();
+      else if (v === undefined || v === '') v = null;
+      obj[h] = v;
+    });
+    rows.push(obj);
+  }
+  const columns = uniq.map(name => ({ name, type: inferType(rows.map(r => r[name])) }));
+  return { columns, rows };
+}
+
+function rowHasAnyValue(row) {
+  if (!row || !row.length) return false;
+  return row.some(v => v !== null && v !== undefined && v !== '');
+}
+
+function openSheetPicker(wb, baseName, fileName) {
+  pendingWorkbook = { wb, baseName };
+  $('#sheetFileName').textContent = `Archivo: ${fileName}  ·  ${wb.SheetNames.length} hojas`;
+  const sel = $('#sheetSelect');
+  sel.innerHTML = wb.SheetNames.map(n => {
+    const ws = wb.Sheets[n];
+    const ref = ws['!ref'] || '';
+    return `<option value="${escapeAttr(n)}">${escapeHtml(n)}${ref ? `  (${ref})` : ''}</option>`;
+  }).join('');
+  $('#sheetError').style.display = 'none';
+  $('#modalSheet').classList.add('open');
+}
 
 // ============================================================
 // New dataset builder (manual, by columns)
