@@ -1,0 +1,122 @@
+[
+  {
+    "source": "sample",
+    "feed": "frontpage",
+    "title": "Pyrex 8-Piece Glass Food Storage Container Set with Lids $12.99 (was $29.99) - Walmart Clearance",
+    "deal_price": 12.99,
+    "list_price": 29.99,
+    "discount_pct": 56.7,
+    "retailer": "Walmart",
+    "url": "https://example.com/deal/1",
+    "description": "Pyrex BPA-free glass containers with snap-on lids. In-store and online clearance. Limited stock.",
+    "posted_at": "2026-05-27T08:15:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "frontpage",
+    "title": "Apple AirPods Pro 2nd Gen $189.99 (was $249) - Best Buy",
+    "deal_price": 189.99,
+    "list_price": 249.00,
+    "discount_pct": 23.7,
+    "retailer": "Best Buy",
+    "url": "https://example.com/deal/2",
+    "description": "Apple AirPods Pro 2nd generation with USB-C case. Best price this month.",
+    "posted_at": "2026-05-27T09:02:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "popular",
+    "title": "Crayola 64-Count Crayons 3-Pack $4.99 (was $14.97) Target Clearance",
+    "deal_price": 4.99,
+    "list_price": 14.97,
+    "discount_pct": 66.7,
+    "retailer": "Target",
+    "url": "https://example.com/deal/3",
+    "description": "Back-to-school clearance. 3 packs of 64-count Crayola crayons. YMMV - check your local store.",
+    "posted_at": "2026-05-27T07:30:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "frontpage",
+    "title": "OXO Good Grips 11-Piece Kitchen Tool Set $24.99 (was $59.99) - Kohl's",
+    "deal_price": 24.99,
+    "list_price": 59.99,
+    "discount_pct": 58.3,
+    "retailer": "Kohl's",
+    "url": "https://example.com/deal/4",
+    "description": "OXO kitchen utensil set. Stack Kohl's Cash + 15% off coupon code SAVE15 for extra savings.",
+    "posted_at": "2026-05-27T06:45:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "popular",
+    "title": "1-Year Sam's Club Membership $25 (was $50) - New Members Only",
+    "deal_price": 25.00,
+    "list_price": 50.00,
+    "discount_pct": 50.0,
+    "retailer": "Sam's Club",
+    "url": "https://example.com/deal/5",
+    "description": "Half-price annual membership for new Sam's Club members.",
+    "posted_at": "2026-05-27T05:00:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "frontpage",
+    "title": "Hasbro Monopoly Classic Board Game $9.88 (was $19.99) - Walmart",
+    "deal_price": 9.88,
+    "list_price": 19.99,
+    "discount_pct": 50.6,
+    "retailer": "Walmart",
+    "url": "https://example.com/deal/6",
+    "description": "Classic Monopoly board game on rollback at Walmart. Hasbro brand - check restrictions in seller app.",
+    "posted_at": "2026-05-27T04:20:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "popular",
+    "title": "Yankee Candle Large Jar 22oz $9.99 (was $32.99) - Yankee Candle Clearance",
+    "deal_price": 9.99,
+    "list_price": 32.99,
+    "discount_pct": 69.7,
+    "retailer": "Yankee Candle",
+    "url": "https://example.com/deal/7",
+    "description": "Discontinued scents on clearance. Various fragrances. Heavy item - check shipping cost.",
+    "posted_at": "2026-05-26T22:10:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "frontpage",
+    "title": "Mr. Coffee 12-Cup Programmable Coffee Maker $19.99 (was $44.99) Target",
+    "deal_price": 19.99,
+    "list_price": 44.99,
+    "discount_pct": 55.6,
+    "retailer": "Target",
+    "url": "https://example.com/deal/8",
+    "description": "Black, programmable, 12-cup capacity. Clearance with red sticker.",
+    "posted_at": "2026-05-27T10:00:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "frontpage",
+    "title": "Mainstays Bath Towels 6-Pack $8.97 (was $19.97) - Walmart",
+    "deal_price": 8.97,
+    "list_price": 19.97,
+    "discount_pct": 55.1,
+    "retailer": "Walmart",
+    "url": "https://example.com/deal/9",
+    "description": "Walmart in-house brand. 6 cotton bath towels assorted colors.",
+    "posted_at": "2026-05-27T03:15:00Z"
+  },
+  {
+    "source": "sample",
+    "feed": "popular",
+    "title": "LEGO Star Wars X-Wing Fighter $39.99 (was $59.99) Target Clearance",
+    "deal_price": 39.99,
+    "list_price": 59.99,
+    "discount_pct": 33.3,
+    "retailer": "Target",
+    "url": "https://example.com/deal/10",
+    "description": "LEGO Star Wars set. Note: LEGO is gated for new Amazon sellers.",
+    "posted_at": "2026-05-27T01:45:00Z"
+  }
+]

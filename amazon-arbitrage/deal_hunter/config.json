@@ -1,0 +1,85 @@
+{
+  "_comment": "Edit these rules to match your strategy. Hunter applies them to every deal.",
+
+  "price": {
+    "min_deal_price": 5.00,
+    "max_deal_price": 60.00
+  },
+
+  "discount": {
+    "min_discount_pct": 40.0
+  },
+
+  "retailers": {
+    "include_only": ["Walmart", "Target", "Kohl's", "TJ Maxx", "Marshalls", "Ross", "Big Lots", "Best Buy", "Macy's", "Home Depot", "Lowe's", "CVS", "Walgreens"],
+    "exclude": []
+  },
+
+  "keywords": {
+    "exclude_in_title": [
+      "subscription",
+      "warranty",
+      "membership",
+      "gift card",
+      "rental",
+      "service",
+      "credit",
+      "trade-in",
+      "trade in",
+      "free with"
+    ],
+    "exclude_gated_brands": [
+      "Apple",
+      "AirPods",
+      "iPhone",
+      "iPad",
+      "Beats",
+      "Nike",
+      "Adidas",
+      "Disney",
+      "Funko",
+      "LEGO",
+      "Sony",
+      "Samsung",
+      "Bose",
+      "Microsoft",
+      "Xbox",
+      "PlayStation",
+      "Nintendo"
+    ],
+    "exclude_categories": [
+      "battery",
+      "lithium",
+      "perfume",
+      "cologne",
+      "fragrance",
+      "alcohol",
+      "wine",
+      "beer",
+      "supplement",
+      "vitamin"
+    ]
+  },
+
+  "size_hints": {
+    "_comment": "Heuristics from title - flag oversize items that have bad FBA fees",
+    "exclude_in_title": [
+      "TV",
+      "monitor",
+      "treadmill",
+      "mattress",
+      "sofa",
+      "couch",
+      "grill",
+      "lawn mower",
+      "snowblower",
+      "patio set"
+    ]
+  },
+
+  "output": {
+    "top_n": 15,
+    "report_path": "report.md",
+    "candidates_path": "candidates.json"
+  }
+}
