@@ -133,9 +133,11 @@ def load_targets(min_max_buy_pct: float = 25.0, limit: int = 25) -> List[dict]:
                 continue
             if (t.get("max_buy_pct") or 0) < min_max_buy_pct:
                 continue
+            if not t.get("sale_price") or not t.get("max_buy_price"):
+                continue
             all_targets.append({**t, "_source": source})
 
-    all_targets.sort(key=lambda x: x.get("max_buy_pct", 0), reverse=True)
+    all_targets.sort(key=lambda x: x.get("max_buy_pct") or 0, reverse=True)
     return all_targets[:limit]
 
 

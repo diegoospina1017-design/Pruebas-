@@ -134,8 +134,10 @@ def load_targets(min_max_buy_pct: float = 25.0, limit: int = 25) -> List[dict]:
                 continue
             if (t.get("max_buy_pct") or 0) < min_max_buy_pct:
                 continue
+            if not t.get("sale_price") or not t.get("max_buy_price"):
+                continue
             all_targets.append({**t, "_source": source})
-    all_targets.sort(key=lambda x: x.get("max_buy_pct", 0), reverse=True)
+    all_targets.sort(key=lambda x: x.get("max_buy_pct") or 0, reverse=True)
     return all_targets[:limit]
 
 
@@ -157,12 +159,27 @@ def load_from_niches(min_score: float = 60.0, limit: int = 25,
             continue
         if exclude_gated and is_likely_gated(t.get("brand", ""), t.get("title", "")):
             continue
+        if not t.get("sale_price") or not t.get("max_buy_price"):
+            continue
         out.append({**t, "_source": "niches"})
-    out.sort(key=lambda x: x.get("_score", 0), reverse=True)
+    out.sort(key=lambda x: x.get("_score") or 0, reverse=True)
     return out[:limit]
 
 
+def _has_required_fields(t: dict) -> bool:
+    return bool(
+        t.get("asin")
+        and t.get("sale_price")
+        and t.get("max_buy_price")
+    )
+
+
 def build_user_prompt(targets: List[dict]) -> str:
+    valid = [t for t in targets if _has_required_fields(t)]
+    skipped = len(targets) - len(valid)
+    if skipped:
+        print(f"[warn] skipped {skipped} target(s) missing sale_price or max_buy_price")
+
     lines = [
         "Search Google for current deals on these specific Amazon best-seller products.",
         "Find deals AT or BELOW the 'Max Buy' price. Return JSON array only.",
@@ -170,12 +187,14 @@ def build_user_prompt(targets: List[dict]) -> str:
         "## Target products",
         "",
     ]
-    for i, t in enumerate(targets, 1):
-        lines.append(f"{i}. ASIN `{t['asin']}` | **{t.get('brand', '?')}**")
-        lines.append(f"   Title: {t.get('title', '?')[:100]}")
+    for i, t in enumerate(valid, 1):
+        sale = float(t.get("sale_price") or 0)
+        max_buy = float(t.get("max_buy_price") or 0)
+        lines.append(f"{i}. ASIN `{t['asin']}` | **{t.get('brand') or '?'}**")
+        lines.append(f"   Title: {(t.get('title') or '?')[:100]}")
         lines.append(
-            f"   Amazon: ${t['sale_price']:.2f}  |  MAX BUY: **${t['max_buy_price']:.2f}**  "
-            f"|  Category: {t.get('category', '?')}"
+            f"   Amazon: ${sale:.2f}  |  MAX BUY: **${max_buy:.2f}**  "
+            f"|  Category: {t.get('category') or '?'}"
         )
         lines.append("")
     lines.append("Return the JSON array only. No code fences, no commentary.")
