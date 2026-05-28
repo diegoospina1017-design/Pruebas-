@@ -147,15 +147,20 @@ class KeepaClient:
             raise KeepaError(f"Keepa error: {data['error']}")
         return data
 
-    def search(self, query: str, limit: int = 5) -> List["KeepaProduct"]:
+    def search(self, query: str, limit: int = 5, stats_days: int = 90) -> List["KeepaProduct"]:
         """
-        Search Amazon by text. Returns parsed product objects.
+        Search Amazon by text. Returns parsed product objects with stats.
 
         Keepa's /search endpoint with type=product returns FULL product data
-        in the response (no separate /product call needed). Costs ~10 tokens
-        per search regardless of how many products come back.
+        in the response (no separate /product call needed). Passing stats=N
+        also includes price/BSR history. Cost: ~10 tokens per search.
         """
-        data = self._get("/search", {"type": "product", "term": query, "domain": DOMAIN_US})
+        data = self._get("/search", {
+            "type": "product",
+            "term": query,
+            "domain": DOMAIN_US,
+            "stats": stats_days,
+        })
         products = data.get("products") or []
         parsed = []
         for p in products[:limit]:
@@ -183,11 +188,24 @@ class KeepaClient:
         current = stats.get("current") or []
         avg90 = stats.get("avg90") or []
 
-        cur_price = self._cents_to_dollars(current[0] if len(current) > 0 else None)
-        avg_price = self._cents_to_dollars(avg90[0] if len(avg90) > 0 else None)
+        def _idx(arr, i):
+            return arr[i] if isinstance(arr, list) and len(arr) > i else None
 
-        cur_bsr = current[3] if len(current) > 3 and current[3] > 0 else None
-        avg_bsr = avg90[3] if len(avg90) > 3 and avg90[3] > 0 else None
+        amazon_price = self._cents_to_dollars(_idx(current, 0))
+        new_price = self._cents_to_dollars(_idx(current, 1))
+        used_price = self._cents_to_dollars(_idx(current, 2))
+        buybox_price = self._cents_to_dollars(_idx(current, 18))
+        cur_price = amazon_price or buybox_price or new_price or used_price
+
+        avg_amazon = self._cents_to_dollars(_idx(avg90, 0))
+        avg_new = self._cents_to_dollars(_idx(avg90, 1))
+        avg_buybox = self._cents_to_dollars(_idx(avg90, 18))
+        avg_price = avg_amazon or avg_buybox or avg_new
+
+        bsr_cur = _idx(current, 3)
+        bsr_avg = _idx(avg90, 3)
+        cur_bsr = bsr_cur if isinstance(bsr_cur, int) and bsr_cur > 0 else None
+        avg_bsr = bsr_avg if isinstance(bsr_avg, int) and bsr_avg > 0 else None
 
         weight_g = p.get("packageWeight") or p.get("itemWeight")
         weight_lb = (weight_g * 0.00220462) if weight_g else None
