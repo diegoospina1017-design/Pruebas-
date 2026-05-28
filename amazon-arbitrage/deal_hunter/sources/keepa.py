@@ -147,11 +147,23 @@ class KeepaClient:
             raise KeepaError(f"Keepa error: {data['error']}")
         return data
 
-    def search(self, query: str, limit: int = 5) -> List[str]:
-        """Search Amazon by text. Returns top N ASINs ordered by Keepa relevance."""
+    def search(self, query: str, limit: int = 5) -> List["KeepaProduct"]:
+        """
+        Search Amazon by text. Returns parsed product objects.
+
+        Keepa's /search endpoint with type=product returns FULL product data
+        in the response (no separate /product call needed). Costs ~10 tokens
+        per search regardless of how many products come back.
+        """
         data = self._get("/search", {"type": "product", "term": query, "domain": DOMAIN_US})
-        asins = data.get("asinList") or []
-        return asins[:limit]
+        products = data.get("products") or []
+        parsed = []
+        for p in products[:limit]:
+            try:
+                parsed.append(self._parse_product(p))
+            except Exception as e:
+                print(f"  [keepa] failed to parse product: {e}")
+        return parsed
 
     def product(self, asin: str, days: int = 90) -> Optional[KeepaProduct]:
         """Fetch product details + stats. Returns None if not found."""
@@ -283,27 +295,16 @@ def find_best_match(
     candidates_to_inspect: int = 3,
 ) -> Tuple[Optional[KeepaProduct], List[Tuple[KeepaProduct, float]]]:
     """
-    Search + rank Keepa candidates for a deal.
+    Search + rank Keepa candidates for a deal in a single API call.
 
     Returns (best_match, all_ranked) where all_ranked is a list of
     (product, score) tuples in descending score order.
     """
-    asins = client.search(deal_title, limit=candidates_to_inspect)
-    if not asins:
+    products = client.search(deal_title, limit=candidates_to_inspect)
+    if not products:
         return None, []
 
-    ranked = []
-    for asin in asins:
-        try:
-            prod = client.product(asin)
-        except KeepaError as e:
-            print(f"  [keepa] {asin} fetch failed: {e}")
-            continue
-        if not prod:
-            continue
-        s = match_score(deal_title, prod, deal_price)
-        ranked.append((prod, s))
-
+    ranked = [(p, match_score(deal_title, p, deal_price)) for p in products]
     ranked.sort(key=lambda x: x[1], reverse=True)
     best = ranked[0][0] if ranked and ranked[0][1] >= 40 else None
     return best, ranked
