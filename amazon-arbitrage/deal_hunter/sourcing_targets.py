@@ -160,7 +160,7 @@ def render_markdown(results: list, target_roi: float, target_profit: float) -> s
 
     lines = [
         "# Sourcing Targets Report",
-        f"_Target: \\u2265 {target_roi}% ROI and \\u2265 ${target_profit:.2f} profit per unit_",
+        f"_Target: at least {target_roi}% ROI and at least ${target_profit:.2f} profit per unit_",
         "",
         f"- Total ASINs analyzed: **{len(results)}**",
         f"- Viable (can be sourced profitably): **{len(viable)}**",
