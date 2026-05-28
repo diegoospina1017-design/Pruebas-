@@ -1,4 +1,7 @@
 report.md
 candidates.json
+claude_deals.json
+executive_summary.md
+run.log
 __pycache__/
 *.pyc
