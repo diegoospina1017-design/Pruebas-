@@ -32,6 +32,7 @@ import os
 import random
 import re
 import sys
+import time
 from datetime import datetime, timezone
 from typing import List, Optional
 
@@ -265,18 +266,39 @@ def call_gemini_real(targets: List[dict], verbose: bool = False) -> List[dict]:
     print("[gemini] calling gemini-2.5-flash with Google Search grounding...")
     print("[gemini] this takes ~30-60 seconds while Google searches each product")
 
-    try:
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=user_prompt,
-            config=types.GenerateContentConfig(
-                system_instruction=SYSTEM_PROMPT,
-                tools=[types.Tool(google_search=types.GoogleSearch())],
-                temperature=0.3,
-            ),
-        )
-    except Exception as e:
-        print(f"[gemini] API call failed: {e}")
+    retryable_codes = ("503", "UNAVAILABLE", "RESOURCE_EXHAUSTED", "429", "500", "INTERNAL")
+    max_attempts = 4
+    backoff = 5
+
+    response = None
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=user_prompt,
+                config=types.GenerateContentConfig(
+                    system_instruction=SYSTEM_PROMPT,
+                    tools=[types.Tool(google_search=types.GoogleSearch())],
+                    temperature=0.3,
+                ),
+            )
+            break
+        except Exception as e:
+            err_str = str(e)
+            is_retryable = any(code in err_str for code in retryable_codes)
+            if attempt >= max_attempts or not is_retryable:
+                print(f"[gemini] API call failed (attempt {attempt}/{max_attempts}): {e}")
+                if is_retryable:
+                    print("[gemini] Google's servers are still overloaded. Try again in a few minutes,")
+                    print("[gemini] or use claude_searcher.py as fallback if you set ANTHROPIC_API_KEY.")
+                sys.exit(1)
+            print(f"[gemini] transient error (attempt {attempt}/{max_attempts}): {err_str[:120]}")
+            print(f"[gemini] retrying in {backoff}s...")
+            time.sleep(backoff)
+            backoff *= 2
+
+    if response is None:
+        print("[gemini] no response after retries")
         sys.exit(1)
 
     usage = getattr(response, "usage_metadata", None)
