@@ -2,6 +2,8 @@ report.md
 candidates.json
 claude_deals.json
 executive_summary.md
+niches.json
+niches_report.md
 run.log
 __pycache__/
 *.pyc
