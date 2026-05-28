@@ -69,7 +69,7 @@ def render(deals: List[dict], top_n: int = 15) -> str:
             m = d["_target_match"]
             lines.extend([
                 f"\n**{i}. {d['title']}**",
-                f"- Deal: ${d['deal_price']:.2f} at {d.get('retailer') or '?'} ({d.get('discount_pct', 0):.0f}% off)",
+                f"- Deal: ${d['deal_price']:.2f} at {d.get('retailer') or '?'} ({(d.get('discount_pct') or 0):.0f}% off)",
                 f"- Matched target: `{m['target_asin']}` ({m['target_brand']}) - {m['target_title']}",
                 f"- Your max buy was ${m['target_max_buy']:.2f}, this is ${m['margin_vs_max']:.2f} below",
                 f"- Sells on Amazon at ${m['target_amazon_price']:.2f} | BSR {m['target_bsr']} | FBA sellers {m['target_fba_sellers']}",
@@ -124,7 +124,7 @@ def render(deals: List[dict], top_n: int = 15) -> str:
             score_str = f" (Keepa match {a['match_score']:.0f}/100)" if a.get("match_score") else ""
             lines.extend([
                 f"\n#### {i}. {d['title']}",
-                f"- Deal: ${d['deal_price']:.2f} at {d.get('retailer') or '?'} ({d.get('discount_pct', 0):.0f}% off)",
+                f"- Deal: ${d['deal_price']:.2f} at {d.get('retailer') or '?'} ({(d.get('discount_pct') or 0):.0f}% off)",
                 f"- Amazon ASIN: `{a.get('asin')}` selling at ${a['amazon_sale_price']:.2f}  _[source: {source}{score_str}]_",
             ])
             if a.get("keepa_title"):
