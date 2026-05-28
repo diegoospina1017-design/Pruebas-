@@ -139,6 +139,30 @@ def load_targets(min_max_buy_pct: float = 25.0, limit: int = 25) -> List[dict]:
     return all_targets[:limit]
 
 
+def load_from_niches(min_score: float = 60.0, limit: int = 25,
+                     exclude_gated: bool = True) -> List[dict]:
+    """Load top niches from niches.json (opportunity-ranked, not just margin)."""
+    path = os.path.join(HERE, "niches.json")
+    if not os.path.exists(path):
+        print(f"[error] {path} not found - run `python3 find_niches.py` first")
+        sys.exit(1)
+    with open(path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    try:
+        from find_niches import is_likely_gated
+    except ImportError:
+        is_likely_gated = lambda b, t="": False
+    out = []
+    for t in data:
+        if t.get("_score", 0) < min_score:
+            continue
+        if exclude_gated and is_likely_gated(t.get("brand", ""), t.get("title", "")):
+            continue
+        out.append({**t, "_source": "niches"})
+    out.sort(key=lambda x: x.get("_score", 0), reverse=True)
+    return out[:limit]
+
+
 def build_user_prompt(targets: List[dict]) -> str:
     lines = [
         "Search the web for current deals on these specific Amazon best-seller products.",
@@ -428,22 +452,159 @@ def print_deals_table(deals: List[dict], targets: List[dict]) -> None:
     print()
 
 
+def render_pretty_report(deals: List[dict], targets: List[dict], mode: str) -> str:
+    """Human-readable markdown report grouped by deal status."""
+    target_by_asin = {t["asin"]: t for t in targets}
+    now = datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    hot_buys = []
+    near_miss = []
+    not_found_asins = set(t["asin"] for t in targets)
+
+    for d in deals:
+        asin = d.get("asin")
+        not_found_asins.discard(asin)
+        target = target_by_asin.get(asin)
+        if not target:
+            continue
+        max_buy = target.get("max_buy_price", 0)
+        deal_price = d.get("deal_price", 0)
+        entry = {**d, "_target": target, "_max_buy": max_buy}
+        if deal_price <= max_buy and deal_price > 0:
+            entry["_savings"] = max_buy - deal_price
+            hot_buys.append(entry)
+        else:
+            entry["_over"] = deal_price - max_buy if deal_price else 0
+            near_miss.append(entry)
+
+    hot_buys.sort(key=lambda x: x.get("_savings", 0), reverse=True)
+    near_miss.sort(key=lambda x: x.get("_over", 999))
+    not_found = [target_by_asin[a] for a in not_found_asins if a in target_by_asin]
+    not_found.sort(key=lambda t: t.get("_score", 0), reverse=True)
+
+    mode_label = "MOCK (no API call)" if mode == "mock" else "LIVE Claude search"
+    lines = [
+        f"# Claude Search Report",
+        f"_{now}  |  Mode: {mode_label}_",
+        "",
+        "## At a glance",
+        "",
+        f"- HOT BUYS (price <= your max buy): **{len(hot_buys)}**",
+        f"- Near-miss (above max buy): **{len(near_miss)}**",
+        f"- No deal found yet: **{len(not_found)}**",
+        f"- Total targets searched: **{len(targets)}**",
+        "",
+    ]
+
+    if hot_buys:
+        lines += [
+            "## HOT BUYS - act on these",
+            "",
+            "These are at or below your Max Buy price. Scan ASIN in Amazon Seller "
+            "App before buying to confirm you can sell the brand.",
+            "",
+        ]
+        for i, d in enumerate(hot_buys, 1):
+            t = d["_target"]
+            confidence_badge = {
+                "high": "high confidence", "medium": "medium confidence", "low": "low confidence"
+            }.get(d.get("confidence", "high"), "")
+            stock = "IN STOCK" if d.get("_claude_in_stock", True) else "low stock"
+            lines += [
+                f"### {i}. {t.get('brand', '?')} - {d.get('title', t.get('title', ''))[:80]}",
+                "",
+                f"- **Deal: ${d['deal_price']:.2f}** at **{d.get('retailer', '?')}** ({stock})",
+                f"- Your max buy: ${d['_max_buy']:.2f}  ->  margin **+${d['_savings']:.2f} below max**",
+                f"- Amazon sells at ${t.get('sale_price', 0):.2f}  |  BSR {t.get('bsr') or '?'}  |  FBA sellers: {t.get('fba_sellers') or '?'}",
+                f"- Opportunity score: {t.get('_score', '?')}/100  |  Tier: {t.get('_tier', '?')}",
+                f"- ASIN: `{t['asin']}`  |  Match: {confidence_badge}",
+                f"- {d.get('notes', '')}" if d.get('notes') else "",
+                f"- Buy link: {d.get('url', '?')}",
+                "",
+            ]
+
+    if near_miss:
+        lines += [
+            "## Near-miss - too expensive today, watch for price drops",
+            "",
+            "| ASIN | Brand | Title | Retailer | Deal $ | Max Buy | Over by |",
+            "|------|-------|-------|----------|-------:|--------:|--------:|",
+        ]
+        for d in near_miss:
+            t = d["_target"]
+            lines.append(
+                f"| `{t['asin']}` | {t.get('brand', '?')[:14]} | {(d.get('title') or t.get('title', ''))[:50]} "
+                f"| {d.get('retailer', '?')} | ${d.get('deal_price', 0):.2f} | ${d['_max_buy']:.2f} "
+                f"| ${d['_over']:.2f} |"
+            )
+        lines.append("")
+
+    if not_found:
+        lines += [
+            "## No deal found yet",
+            "",
+            "The agent did not find a current deal at or below max buy for these. "
+            "Worth checking manually in physical stores (TJ Maxx, Marshalls, Ross "
+            "clearance often beats online).",
+            "",
+            "| ASIN | Brand | Title | Amazon $ | Max Buy | BSR | Score |",
+            "|------|-------|-------|---------:|--------:|----:|------:|",
+        ]
+        for t in not_found[:20]:
+            lines.append(
+                f"| `{t['asin']}` | {t.get('brand', '?')[:14]} | {t.get('title', '')[:50]} "
+                f"| ${t.get('sale_price', 0):.2f} | ${t.get('max_buy_price', 0):.2f} "
+                f"| {(t.get('bsr') or 0):,} | {t.get('_score', '?')} |"
+            )
+        lines.append("")
+
+    lines += [
+        "## Next steps",
+        "",
+    ]
+    if hot_buys:
+        lines.append(f"1. **Verify the {len(hot_buys)} HOT BUY(S)** above with the Amazon Seller App")
+        lines.append("2. Buy the ones not gated for your account")
+        lines.append("3. Track each purchase in `tracker/inventory_tracker.csv`")
+    else:
+        lines.append("1. No actionable hot buys today - try `--limit 20` to expand search")
+        lines.append("2. Or check physical stores for the 'no deal found' items")
+    lines.append("")
+
+    return "\n".join(lines) + "\n"
+
+
 def main():
     parser = argparse.ArgumentParser(description="Claude-powered deal searcher")
     parser.add_argument("--mock", action="store_true",
                         help="Cost-free demo: no API call, fake deals")
     parser.add_argument("--show-prompt", action="store_true",
                         help="Print prompt + cost estimate and exit (no API call)")
+    parser.add_argument("--from-niches", action="store_true",
+                        help="Load targets from niches.json (opportunity-ranked) instead of sourcing files")
+    parser.add_argument("--min-score", type=float, default=60.0,
+                        help="With --from-niches: minimum opportunity score (default 60)")
     parser.add_argument("--limit", type=int, default=10,
                         help="Max targets to search (default 10)")
     parser.add_argument("--min-pct", type=float, default=30.0,
-                        help="Min max_buy_pct filter (default 30)")
+                        help="Min max_buy_pct filter (default 30, ignored with --from-niches)")
+    parser.add_argument("--include-gated", action="store_true",
+                        help="With --from-niches: include likely-gated brands")
     parser.add_argument("--verbose", action="store_true")
     parser.add_argument("--output", default=os.path.join(HERE, "claude_deals.json"))
+    parser.add_argument("--report", default=os.path.join(HERE, "claude_report.md"))
     args = parser.parse_args()
 
-    targets = load_targets(min_max_buy_pct=args.min_pct, limit=args.limit)
-    print(f"[load] {len(targets)} targets selected (max_buy_pct >= {args.min_pct}%)")
+    if args.from_niches:
+        targets = load_from_niches(
+            min_score=args.min_score,
+            limit=args.limit,
+            exclude_gated=not args.include_gated,
+        )
+        print(f"[load] {len(targets)} niches selected (score >= {args.min_score}, gated excluded: {not args.include_gated})")
+    else:
+        targets = load_targets(min_max_buy_pct=args.min_pct, limit=args.limit)
+        print(f"[load] {len(targets)} targets selected (max_buy_pct >= {args.min_pct}%)")
 
     if not targets:
         print("[load] no viable targets - run sourcing_from_excel.py first")
@@ -469,10 +630,14 @@ def main():
     with open(args.output, "w", encoding="utf-8") as f:
         json.dump(hunter_format, f, indent=2)
     print(f"[write] {args.output}")
-    print(
-        f"[next] feed into hunter: deals are in hunter format and can be cross-checked "
-        f"against your 82 sourcing targets via target_matcher"
-    )
+
+    mode = "mock" if args.mock else "live"
+    report_md = render_pretty_report(deals, targets, mode)
+    with open(args.report, "w", encoding="utf-8") as f:
+        f.write(report_md)
+    print(f"[write] {args.report}")
+    print()
+    print(f"[next] open the report: open {args.report}")
 
 
 if __name__ == "__main__":

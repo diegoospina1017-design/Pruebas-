@@ -9,3 +9,4 @@ __pycache__/
 *.pyc
 refresh.json
 refresh_report.md
+claude_report.md
