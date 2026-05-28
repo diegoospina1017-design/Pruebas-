@@ -34,14 +34,58 @@ deal_hunter/
 ### Offline (sin internet) - para probar la lógica
 ```bash
 cd amazon-arbitrage/deal_hunter
-python3 hunter.py --offline
+python3 hunter.py --offline --no-keepa
 cat report.md
 ```
 
-### Live (desde tu máquina en VA, con internet)
+### Live SIN Keepa (manual mode)
 ```bash
+python3 hunter.py --no-keepa
+```
+
+### Live CON Keepa (automatización completa) ⭐
+```bash
+export KEEPA_API_KEY="tu-clave-de-keepa"
 python3 hunter.py
 ```
+
+## Setup de Keepa (auto-lookup de Amazon)
+
+1. Ve a **https://keepa.com/#!api** y crea cuenta
+2. Activa el trial gratuito de 7 días (o suscribe $19/mes)
+3. Copia tu API key del dashboard
+4. En la terminal, exporta la variable de entorno:
+   ```bash
+   export KEEPA_API_KEY="tu-clave-aqui"
+   ```
+   Para que persista, agrégalo a `~/.zshrc` (Mac) o `~/.bashrc` (Linux):
+   ```bash
+   echo 'export KEEPA_API_KEY="tu-clave-aqui"' >> ~/.zshrc
+   source ~/.zshrc
+   ```
+5. Verifica que la variable esté seteada:
+   ```bash
+   echo $KEEPA_API_KEY
+   ```
+6. Prueba el cliente solo (1 búsqueda, ~6 tokens):
+   ```bash
+   python3 sources/keepa.py "Pyrex 8-piece glass food storage"
+   ```
+
+### Costos en tokens
+
+| Operación | Tokens |
+|---|---|
+| 1 search (texto → 5 ASINs) | 1 |
+| 1 product detail | ~5 |
+| 1 deal completo (search + 3 details) | ~16 |
+| Plan basic Keepa ($19/mes) | ~60,000 tokens/mes |
+
+Con eso puedes analizar **~3,750 deals/mes**. Mucho más de lo que vas a necesitar.
+
+### Cache automático
+
+Cada deal analizado se guarda en `asin_map.json`. La próxima vez que corras el hunter, **no vuelve a gastar tokens** en deals ya vistos. Solo paga tokens por los deals nuevos del día.
 
 ## Workflow real (cómo lo vas a usar día a día)
 

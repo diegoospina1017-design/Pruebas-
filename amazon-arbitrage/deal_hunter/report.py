@@ -56,10 +56,16 @@ def render(deals: List[dict], top_n: int = 15) -> str:
         lines.append("### Details for top candidates")
         for i, d in enumerate(analyzed[:5], 1):
             a = d["_analysis"]
+            source = a.get("data_source", "manual")
+            score_str = f" (Keepa match {a['match_score']:.0f}/100)" if a.get("match_score") else ""
             lines.extend([
                 f"\n#### {i}. {d['title']}",
                 f"- Deal: ${d['deal_price']:.2f} at {d.get('retailer') or '?'} ({d.get('discount_pct', 0):.0f}% off)",
-                f"- Amazon ASIN: `{a.get('asin')}` selling at ${a['amazon_sale_price']:.2f}",
+                f"- Amazon ASIN: `{a.get('asin')}` selling at ${a['amazon_sale_price']:.2f}  _[source: {source}{score_str}]_",
+            ])
+            if a.get("keepa_title"):
+                lines.append(f"- Keepa matched title: _{a['keepa_title'][:120]}_")
+            lines.extend([
                 f"- Net profit per unit: **${a['net_profit']:.2f}** (ROI {a['roi_pct']:.0f}%, margin {a['margin_pct']:.1f}%)",
                 f"- Recommendation: **{a['recommendation']}**",
                 f"- Fees: referral ${a['fee_breakdown']['referral']:.2f}, "
@@ -69,6 +75,11 @@ def render(deals: List[dict], top_n: int = 15) -> str:
             ])
             if a.get("warnings"):
                 lines.append(f"- Warnings: {'; '.join(a['warnings'])}")
+            if a.get("alternatives"):
+                lines.append(f"- Other Keepa candidates (if match seems wrong):")
+                for alt in a["alternatives"][:3]:
+                    price_str = f"${alt['price']:.2f}" if alt.get("price") else "?"
+                    lines.append(f"    - `{alt['asin']}` ({price_str}, score {alt['score']:.0f}): {alt['title']}")
             lines.append(f"- Deal link: {d['url']}")
 
     if pending:

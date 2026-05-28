@@ -1,47 +1,50 @@
 {
-  "_comment": "Map deal URLs to Amazon-side data. Edit by hand after looking up each deal on Amazon. Keys are deal URLs from the candidate report.",
-
   "https://example.com/deal/1": {
     "asin": "B07GFKJM5N",
     "amazon_sale_price": 29.99,
     "weight_lb": 4.5,
-    "length_in": 14, "width_in": 10, "height_in": 6,
+    "length_in": 14,
+    "width_in": 10,
+    "height_in": 6,
     "category": "kitchen",
     "size_tier": "standard",
     "units_per_box": 4,
     "bsr": 18500,
     "fba_sellers": 12
   },
-
   "https://example.com/deal/4": {
     "asin": "B00004OCNS",
     "amazon_sale_price": 44.99,
     "weight_lb": 2.1,
-    "length_in": 16, "width_in": 5, "height_in": 4,
+    "length_in": 16,
+    "width_in": 5,
+    "height_in": 4,
     "category": "kitchen",
     "size_tier": "standard",
     "units_per_box": 6,
     "bsr": 8200,
     "fba_sellers": 6
   },
-
   "https://example.com/deal/8": {
     "asin": "B00009W3I9",
     "amazon_sale_price": 39.99,
     "weight_lb": 5.8,
-    "length_in": 13, "width_in": 8, "height_in": 14,
+    "length_in": 13,
+    "width_in": 8,
+    "height_in": 14,
     "category": "kitchen",
     "size_tier": "standard",
     "units_per_box": 2,
     "bsr": 45000,
     "fba_sellers": 15
   },
-
   "https://example.com/deal/9": {
     "asin": "B07VPGCJ8R",
     "amazon_sale_price": 22.49,
     "weight_lb": 2.8,
-    "length_in": 12, "width_in": 9, "height_in": 4,
+    "length_in": 12,
+    "width_in": 9,
+    "height_in": 4,
     "category": "home_garden",
     "size_tier": "standard",
     "units_per_box": 8,
