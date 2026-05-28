@@ -33,6 +33,7 @@ from filters import filter_deals
 from analyzer import analyze_all
 from report import render
 from target_matcher import load_targets, attach_target_matches
+from notifier import notify_hot_buys
 
 try:
     from sources.keepa import KeepaClient, KeepaError
@@ -92,6 +93,8 @@ def main():
                         help="Use sample_deals.json instead of fetching live")
     parser.add_argument("--no-keepa", action="store_true",
                         help="Skip Keepa auto-lookup even if KEEPA_API_KEY is set")
+    parser.add_argument("--no-notify", action="store_true",
+                        help="Skip notifications even if HOT BUYS are found")
     parser.add_argument("--sample", default=os.path.join(HERE, "sources", "sample_deals.json"))
     parser.add_argument("--output-report", default=os.path.join(HERE, "report.md"))
     parser.add_argument("--output-candidates", default=os.path.join(HERE, "candidates.json"))
@@ -148,6 +151,12 @@ def main():
 
     print(f"[write] report -> {args.output_report}")
     print(f"[write] candidates -> {args.output_candidates}")
+
+    if not args.no_notify:
+        hot_buys = [d for d in analyzed if d.get("_target_match", {}).get("is_hot_buy")]
+        if hot_buys:
+            print(f"[notify] sending alerts for {len(hot_buys)} HOT BUY(S)")
+            notify_hot_buys(hot_buys)
 
 
 if __name__ == "__main__":
