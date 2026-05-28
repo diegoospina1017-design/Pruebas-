@@ -1,0 +1,1792 @@
+[
+  {
+    "asin": "B08HSHWG89",
+    "title": "Amazon Basics Leak-Proof Dog and Puppy Potty Training Pee Pads with Quick-Dry 5-Layer Surf",
+    "brand": "Amazon Basics",
+    "category": "Disposable Training Pads",
+    "sale_price": 20.63,
+    "bsr": 1,
+    "weight_lb": 8.289,
+    "fba_fee": 9.3,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0009X29WK",
+    "title": "Dr. Elsey's Ultra UnScented Clumping Clay Cat Litter 40 lb. Bag",
+    "brand": "Dr. Elsey's",
+    "category": "Litter",
+    "sale_price": 22.08,
+    "bsr": 2,
+    "weight_lb": 41.099,
+    "fba_fee": 25.91,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.3,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00JN9IWNG",
+    "title": "Purina Fancy Feast Gravy Lovers Poultry and Beef Grilled Gourmet Wet Cat Food Variety Pack",
+    "brand": "Fancy Feast",
+    "category": "Canned",
+    "sale_price": 27.87,
+    "bsr": 13,
+    "weight_lb": 6.609,
+    "fba_fee": 8.46,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00BSYR7K8",
+    "title": "Earth Rated Poop Bags for Dogs, Guaranteed Leak Proof and Extra Thick Waste Bag Refill Rol",
+    "brand": "Earth Rated",
+    "category": "Bags",
+    "sale_price": 14.25,
+    "bsr": 4,
+    "weight_lb": 1.321,
+    "fba_fee": 5.61,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": "Low",
+    "rating": 4.8,
+    "warnings": [
+      "need to buy at <10% of sale - tough"
+    ],
+    "status": "very_aggressive_target",
+    "max_buy_price": 1.48,
+    "max_buy_pct": 10.4
+  },
+  {
+    "asin": "B07S2TDDCK",
+    "title": "Greenies Pill Pockets for Dogs Large Size, Dog Treat Pouch for Capsule Medication, Peanut ",
+    "brand": "Greenies",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 17.48,
+    "bsr": 5,
+    "weight_lb": 1.041,
+    "fba_fee": 5.22,
+    "fba_sellers": 3,
+    "bb_pct_amazon": 0.87,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 87% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07D323MFZ",
+    "title": "INABA Churu Cat Treats, Lickable, Squeezable Creamy Pur\u00e9e Cat Treat with Green Tea Extract",
+    "brand": "INABA",
+    "category": "Pastes",
+    "sale_price": 32.98,
+    "bsr": 7,
+    "weight_lb": 2.05,
+    "fba_fee": 6.13,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.9,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0747RSKTG",
+    "title": "Fresh Step Extreme Multi Cat Clumping Litter with Febreze Freshness, Low Dust, Odor Contro",
+    "brand": "Fresh Step",
+    "category": "Litter",
+    "sale_price": 11.95,
+    "bsr": 5,
+    "weight_lb": 16.991,
+    "fba_fee": 11.85,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.94,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 94% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B001650NNW",
+    "title": "Purina Pro Plan Veterinary Supplements FortiFlora Daily Probiotics for Dogs, Helps Digesti",
+    "brand": "Pro Plan Veterinary Diets",
+    "category": "Probiotics",
+    "sale_price": 30.99,
+    "bsr": 201,
+    "weight_lb": 0.13,
+    "fba_fee": 3.86,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07C22NTL4",
+    "title": "HONEY CARE All-Absorb A26 Male Dog Wrap, 50 Count, Small",
+    "brand": "HONEY CARE",
+    "category": "Diapers",
+    "sale_price": 16.14,
+    "bsr": 9,
+    "weight_lb": 2.291,
+    "fba_fee": 7.46,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": "Low",
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B072DTFZHL",
+    "title": "Sheba Perfect Portions Wet Cat Food Cuts in Gravy, Cat Food Wet Recipe, Roasted Chicken En",
+    "brand": "Sheba",
+    "category": "Canned",
+    "sale_price": 23.38,
+    "bsr": 12,
+    "weight_lb": 5.031,
+    "fba_fee": 7.96,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07NHL31CC",
+    "title": "Earth Rated Pet Wipes for Dogs and Cats, Hypoallergenic, 3-in-1 Cleaning, Deodorizing and ",
+    "brand": "Earth Rated",
+    "category": "Grooming Wipes",
+    "sale_price": 9.82,
+    "bsr": 11,
+    "weight_lb": 2.008,
+    "fba_fee": 5.18,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [],
+    "status": "too_cheap"
+  },
+  {
+    "asin": "B08P2D95G8",
+    "title": "Pur Luv Chicken Jerky Dog Treats, Made with 100% Real Chicken Breast, 16 Ounces, Healthy, ",
+    "brand": "Pur Luv",
+    "category": "Jerky",
+    "sale_price": 13.83,
+    "bsr": 10,
+    "weight_lb": 1.041,
+    "fba_fee": 6.02,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07NJLMDNQ",
+    "title": "Pedigree Dentastix Dog Dental Treats, Large Breed Dog Treats, Fresh Flavor, 1.87 lb. Bag (",
+    "brand": "Pedigree",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 16.52,
+    "bsr": 16,
+    "weight_lb": 1.92,
+    "fba_fee": 6.02,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B09K8YYVWV",
+    "title": "Blue Buffalo Life Protection Formula Chicken & Brown Rice Adult Dry Dog Food, Supports Imm",
+    "brand": "Blue Buffalo",
+    "category": "Dry",
+    "sale_price": 13.71,
+    "bsr": 11,
+    "weight_lb": 5.071,
+    "fba_fee": 7.96,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.8,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 80% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00NABTC8M",
+    "title": "Amazon Basics Dog Poop Leak Proof Bags with Dispenser and Leash Clip, Unscented, 13\" x 9\" ",
+    "brand": "Amazon Basics",
+    "category": "Bags",
+    "sale_price": 10.17,
+    "bsr": 15,
+    "weight_lb": 1.629,
+    "fba_fee": 5.66,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.79,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 79% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B000I82DTU",
+    "title": "Milk-Bone Original Dog Treats Biscuits for Medium Dogs, 10 Pound",
+    "brand": "Milk-Bone",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 14.98,
+    "bsr": 15,
+    "weight_lb": 10.47,
+    "fba_fee": 9.7,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B01LNB6SA0",
+    "title": "Temptations Cat Treats Classic Crunchy and Soft Cat Treats, Tasty Chicken Flavor, 30 oz. T",
+    "brand": "Temptations",
+    "category": "Crunchy Treats",
+    "sale_price": 14.83,
+    "bsr": 17,
+    "weight_lb": 2.31,
+    "fba_fee": 6.31,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B089LLHMQL",
+    "title": "ARM & HAMMER Clump & Seal SLIDE Platinum Multi-Cat Clumping Cat Litter, Easy Clean Technol",
+    "brand": "Arm & Hammer",
+    "category": "Litter",
+    "sale_price": 19.45,
+    "bsr": 15,
+    "weight_lb": 20.0,
+    "fba_fee": 12.84,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": "Low",
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B003P9XG68",
+    "title": "Blue Buffalo Health Bars Crunchy Dog Biscuits, Oven-Baked with Natural Ingredients, Pumpki",
+    "brand": "Blue Buffalo",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 4.93,
+    "bsr": 14,
+    "weight_lb": 1.12,
+    "fba_fee": 4.82,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0GRM6N7CJ",
+    "title": "Milk-Bone Soft & Chewy Mini\u2019s Dog Treats, Made with Real Chicken, 18 Ounce Canister (Pack ",
+    "brand": "Milk-Bone",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": null,
+    "bsr": 21,
+    "weight_lb": 2.601,
+    "fba_fee": 6.61,
+    "fba_sellers": null,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [],
+    "status": "incomplete_data"
+  },
+  {
+    "asin": "B003ULL1NQ",
+    "title": "Nutramax Cosequin for Dogs Joint Health Supplement, Contains Glucosamine for Dogs, Plus Ch",
+    "brand": "Nutramax Laboratories",
+    "category": "Hip & Joint Care",
+    "sale_price": 34.93,
+    "bsr": 24,
+    "weight_lb": 0.73,
+    "fba_fee": 4.35,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B000I82DU4",
+    "title": "Milk-Bone Flavor Snacks Small Dog Biscuits, Flavored Crunchy Dog Treats, 7 Pound Box",
+    "brand": "Milk-Bone",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 14.82,
+    "bsr": 25,
+    "weight_lb": 7.469,
+    "fba_fee": 8.47,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0114BNXQ6",
+    "title": "Milk-Bone Flavor Snacks Mini\u2019s Dog Biscuits, Flavored Crunchy Dog Treats, 36 Oz. Canister",
+    "brand": "Milk-Bone",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 11.44,
+    "bsr": 25,
+    "weight_lb": 2.551,
+    "fba_fee": 6.48,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.83,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 83% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0CCLP3BS1",
+    "title": "Minties Dog Dental Bone Treats, Tiny/Small Dental Dog Treats, 5-25 lbs, Clean Teeth, Fight",
+    "brand": "Minties",
+    "category": "Dental Care",
+    "sale_price": 27.05,
+    "bsr": 24,
+    "weight_lb": 3.192,
+    "fba_fee": 7.38,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B01N918D6E",
+    "title": "PetArmor Plus Flea and Tick Prevention for Dogs, Large Dog Flea and Tick Treatment, 6 Dose",
+    "brand": "PetArmor",
+    "category": "Flea Drops",
+    "sale_price": 38.75,
+    "bsr": 47,
+    "weight_lb": 0.09,
+    "fba_fee": 3.86,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.2,
+    "warnings": [],
+    "status": "hazmat_skip"
+  },
+  {
+    "asin": "B001STX13U",
+    "title": "Purina Fancy Feast Grilled Wet Cat Food Seafood Collection in Wet Cat Food Variety Pack - ",
+    "brand": "Fancy Feast",
+    "category": "Canned",
+    "sale_price": 22.83,
+    "bsr": 23,
+    "weight_lb": 5.28,
+    "fba_fee": 8.04,
+    "fba_sellers": 3,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B006W6YHYQ",
+    "title": "Greenies Veterinarian-Recommended Adult Natural Dental Dog Treats Teenie Size, Dog Dental ",
+    "brand": "Greenies",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 36.97,
+    "bsr": 29,
+    "weight_lb": 2.619,
+    "fba_fee": 6.48,
+    "fba_sellers": 3,
+    "bb_pct_amazon": 0.99,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 99% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0BWBNT8JX",
+    "title": "Vital Essentials Freeze Dried Dog Treats | Beef Liver, Single Ingredient | Premium Quality",
+    "brand": "Vital Essentials",
+    "category": "Freeze-Dried",
+    "sale_price": 5.71,
+    "bsr": 27,
+    "weight_lb": 0.15,
+    "fba_fee": 3.5,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00CKFL93K",
+    "title": "Rocco & Roxie Supply Co. Stain & Strong Odor Eliminator, Enzyme Cleaner, Pet Odor Eliminat",
+    "brand": "Rocco & Roxie Supply Co.",
+    "category": "Stain Removers",
+    "sale_price": 23.37,
+    "bsr": 35,
+    "weight_lb": 2.291,
+    "fba_fee": 6.31,
+    "fba_sellers": 2,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.4,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 7.31,
+    "max_buy_pct": 31.3
+  },
+  {
+    "asin": "B07BVL8TQF",
+    "title": "Good \u2018n\u2019 Fun Triple Flavor Kabobs Chews for All Dogs, 24 Ounces, Treat Your Dog to Long-La",
+    "brand": "GOOD 'N' FUN",
+    "category": "Rawhide",
+    "sale_price": 15.75,
+    "bsr": 26,
+    "weight_lb": 1.565,
+    "fba_fee": 6.02,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.99,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 99% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B007JXVR76",
+    "title": "Meow Mix Original Choice Dry Cat Food, 6.3 Pound Bag",
+    "brand": "Meow Mix",
+    "category": "Dry",
+    "sale_price": 8.99,
+    "bsr": 31,
+    "weight_lb": 6.471,
+    "fba_fee": 7.52,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B01M8GFPXG",
+    "title": "Wondercide - Flea, Tick & Mosquito Spray for Pets and Home with Natural Essential Oils - K",
+    "brand": "Wondercide",
+    "category": "Flea Sprays",
+    "sale_price": 26.04,
+    "bsr": 243,
+    "weight_lb": 1.19,
+    "fba_fee": 5.22,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.2,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 10.51,
+    "max_buy_pct": 40.4
+  },
+  {
+    "asin": "B001UDAB6E",
+    "title": "Kaytee Nut & Fruit Wild Bird Seed, 10 lb",
+    "brand": "Kaytee",
+    "category": "Food",
+    "sale_price": null,
+    "bsr": 47,
+    "weight_lb": 10.091,
+    "fba_fee": 13.43,
+    "fba_sellers": null,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [],
+    "status": "incomplete_data"
+  },
+  {
+    "asin": "B07GL8SLKY",
+    "title": "ARM & HAMMER Clump & Seal SLIDE Platinum Multi-Cat Clumping Cat Litter, Easy Clean Technol",
+    "brand": "Arm & Hammer",
+    "category": "Litter",
+    "sale_price": 34.99,
+    "bsr": 22,
+    "weight_lb": 38.751,
+    "fba_fee": 24.44,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B003PMQMK2",
+    "title": "Milk-Bone MaroSnacks Small Dog Treats with Real Bone Marrow, 40 Oz. Canister",
+    "brand": "Milk-Bone",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 11.44,
+    "bsr": 31,
+    "weight_lb": 2.78,
+    "fba_fee": 6.9,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0CG2KNCCM",
+    "title": "Temptations Creamy Puree Squeezable Lickable Cat Treats, Wet Cat Treats with Beef, Salmon,",
+    "brand": "Temptations",
+    "category": "Treats",
+    "sale_price": 23.18,
+    "bsr": 37,
+    "weight_lb": 1.508,
+    "fba_fee": 5.61,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B001O3UE9E",
+    "title": "Nutramax Proviable Probiotics for Dogs and Cats, Daily Digestive Health Supplement with Mu",
+    "brand": "Nutramax",
+    "category": "Digestive Remedies",
+    "sale_price": 44.99,
+    "bsr": 44,
+    "weight_lb": 0.11,
+    "fba_fee": 3.86,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B075QK5SP2",
+    "title": "Sheba Perfect Portions Wet Cat Food Pate with Sustainable Salmon, Signature Seafood Entree",
+    "brand": "Sheba",
+    "category": "Canned",
+    "sale_price": 23.26,
+    "bsr": 36,
+    "weight_lb": 4.941,
+    "fba_fee": 7.88,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00ZJ5BJ74",
+    "title": "Vetnique Glandex Anal Gland Soft Chew Treats with Pumpkin for Dogs Digestive Enzymes, Prob",
+    "brand": "Vetnique",
+    "category": "Digestive Remedies",
+    "sale_price": 32.98,
+    "bsr": 37,
+    "weight_lb": 0.659,
+    "fba_fee": 4.35,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 15.84,
+    "max_buy_pct": 48.0
+  },
+  {
+    "asin": "B0F428Y7NW",
+    "title": "Muddy Mat\u00ae | Super Absorbent Door Mat Indoor, Microfiber Quick Dry Chenille Entryway Rug, ",
+    "brand": "Muddy Mat",
+    "category": "Bed Mats",
+    "sale_price": 85.22,
+    "bsr": 38,
+    "weight_lb": 6.609,
+    "fba_fee": 9.06,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 40.05,
+    "max_buy_pct": 47.0
+  },
+  {
+    "asin": "B08QYLH4XQ",
+    "title": "IAMS Proactive Health Dry Cat Food, Indoor Weight and Hairball Care Cat Food Dry Recipe, w",
+    "brand": "IAMS",
+    "category": "Dry",
+    "sale_price": 9.88,
+    "bsr": 45,
+    "weight_lb": 3.589,
+    "fba_fee": 6.61,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00B8CG602",
+    "title": "Seresto Flea & Tick Collar For Dogs Over 18 lbs., Treatment & Prevention, Vet-Recommend, 8",
+    "brand": "Seresto",
+    "category": "Flea & Tick Collars",
+    "sale_price": 56.89,
+    "bsr": 26,
+    "weight_lb": 0.291,
+    "fba_fee": 4.36,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 0.89,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [],
+    "status": "hazmat_skip"
+  },
+  {
+    "asin": "B0BGT84G2R",
+    "title": "Delectables Squeeze Up Variety Pack, Creamy Squeezable Puree, Lickable Wet Cat Treats, Gra",
+    "brand": "Delectables",
+    "category": "Soft Treats",
+    "sale_price": 28.98,
+    "bsr": 39,
+    "weight_lb": 2.161,
+    "fba_fee": 6.13,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B071WCV19B",
+    "title": "Zesty Paws Allergy Immune Bites - Dog Allergy Chews, Dog Probiotics for Itchy Skin and Ear",
+    "brand": "Zesty Paws",
+    "category": "Itch Remedies",
+    "sale_price": 32.5,
+    "bsr": 43,
+    "weight_lb": 0.93,
+    "fba_fee": 4.76,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.2,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 15.05,
+    "max_buy_pct": 46.3
+  },
+  {
+    "asin": "B0727R5C5Q",
+    "title": "Purina Friskies Gravy Swirlers With Flavors of Chicken, Salmon and Gravy Dry Cat Food - 3.",
+    "brand": "Friskies",
+    "category": "Dry",
+    "sale_price": 4.78,
+    "bsr": 68,
+    "weight_lb": 3.241,
+    "fba_fee": 6.45,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.93,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 93% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B006W6YHHI",
+    "title": "Greenies Veterinarian-Recommended Adult Natural Dental Dog Treats Regular Size, Dog Dental",
+    "brand": "Greenies",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 36.97,
+    "bsr": 52,
+    "weight_lb": 2.579,
+    "fba_fee": 6.48,
+    "fba_sellers": 4,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B008MKI7KU",
+    "title": "Purina ONE Chicken and Rice Formula Dry Dog Food - 31.1 lb. Bag",
+    "brand": "Purina ONE",
+    "category": "Dry",
+    "sale_price": 45.21,
+    "bsr": 39,
+    "weight_lb": 31.449,
+    "fba_fee": 21.98,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.58,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 58% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07CWHTQW8",
+    "title": "Amazon Basics X-Large Heavy Duty Absorbent Puppy Potty Pads, Leak-Proof, Quick-Dry, Super ",
+    "brand": "Amazon Basics",
+    "category": "Disposable Training Pads",
+    "sale_price": 26.16,
+    "bsr": 77,
+    "weight_lb": 10.549,
+    "fba_fee": 10.11,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B09BBM5CX8",
+    "title": "Best Pet Supplies Interactive Squeaky Dog Chew Toy, Ideal Dog Toys for Chewers, Small, Med",
+    "brand": "Best Pet Supplies",
+    "category": "Squeak Toys",
+    "sale_price": 6.63,
+    "bsr": 36,
+    "weight_lb": 0.181,
+    "fba_fee": 3.5,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.3,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B074P77LB2",
+    "title": "Virbac C.E.T.\u00ae Enzymatic Toothpaste| Tartar & Plaque Control for Fresh Breath | Pet Dental",
+    "brand": "Virbac",
+    "category": "Toothpaste",
+    "sale_price": 12.28,
+    "bsr": 48,
+    "weight_lb": 0.198,
+    "fba_fee": 3.86,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0D94R6D8M",
+    "title": "Wuffes Advanced Dog Hip and Joint Supplement with Glucosamine, Chondroitin, Omega 3, MSM, ",
+    "brand": "Wuffes",
+    "category": "Hip & Joint Care",
+    "sale_price": 69.11,
+    "bsr": 49,
+    "weight_lb": 1.1,
+    "fba_fee": 8.39,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.3,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 34.53,
+    "max_buy_pct": 50.0
+  },
+  {
+    "asin": "B0GRLKH5LP",
+    "title": "Blue Buffalo Bits Soft Dog Treats for Training, Made with Natural Ingredients & Enhanced w",
+    "brand": "Blue Buffalo",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 27.14,
+    "bsr": 40,
+    "weight_lb": 1.561,
+    "fba_fee": 5.66,
+    "fba_sellers": null,
+    "bb_pct_amazon": 0.3,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 10.66,
+    "max_buy_pct": 39.3
+  },
+  {
+    "asin": "B071J1BFTX",
+    "title": "Cesar Wet Dog Food Classic Loaf in Sauce Grilled Chicken, Filet Mignon, Porterhouse Steak,",
+    "brand": "Cesar",
+    "category": "Canned",
+    "sale_price": 35.94,
+    "bsr": 52,
+    "weight_lb": 9.169,
+    "fba_fee": 9.28,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0DQVTFBPM",
+    "title": "Best Pet Supplies Voyager Step-in Air Harness - All Weather Mesh, Reflective, No Pull Harn",
+    "brand": "Best Pet Supplies",
+    "category": "Vest Harnesses",
+    "sale_price": 14.91,
+    "bsr": 51,
+    "weight_lb": 0.154,
+    "fba_fee": 4.35,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B001QCKS4O",
+    "title": "Purina Pro Plan Complete Essentials Shredded Blend Chicken and Rice Dog Food Dry Formula w",
+    "brand": "Purina Pro Plan",
+    "category": "Dry",
+    "sale_price": 74.29,
+    "bsr": 53,
+    "weight_lb": 35.258,
+    "fba_fee": 25.18,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.97,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 97% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0718YFR4K",
+    "title": "DreamBone Chicken Twist Stick Dog Treats, Daily Rawhide-Free Chew, Digests Safely and Comp",
+    "brand": "DreamBone",
+    "category": "Sticks & Twists",
+    "sale_price": 9.41,
+    "bsr": 45,
+    "weight_lb": 0.659,
+    "fba_fee": 3.5,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0FY32LBVV",
+    "title": "WOOF Pupsicle Refill Pops, Delicious Long Lasting Dog Treats, Pre-Made Pupsicle Refills fo",
+    "brand": "WOOF",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 46.99,
+    "bsr": 51,
+    "weight_lb": 2.337,
+    "fba_fee": 6.31,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 21.83,
+    "max_buy_pct": 46.5
+  },
+  {
+    "asin": "B01J5GE3MA",
+    "title": "PetSafe ScoopFree 4.3 lb Bags (2 Pack) Premium Crystal Cat Litter - Outperforms Clay Litte",
+    "brand": "PetSafe",
+    "category": "Litter",
+    "sale_price": 24.98,
+    "bsr": 73,
+    "weight_lb": 9.279,
+    "fba_fee": 9.14,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.4,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00CPDWT2M",
+    "title": "Benebone Wishbone Durable Dog Chew Toy for Aggressive Chewers, Real Bacon, Made in USA, Me",
+    "brand": "Benebone",
+    "category": "Chew Toys",
+    "sale_price": 10.8,
+    "bsr": 51,
+    "weight_lb": 0.37,
+    "fba_fee": 4.09,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0747VCYWT",
+    "title": "Stella & Chewy's Freeze-Dried Raw Lamb Meal Mixers- Dog Food Topper and Mixer - Made with ",
+    "brand": "Stella & Chewy's",
+    "category": "Freeze-Dried",
+    "sale_price": 9.87,
+    "bsr": 624,
+    "weight_lb": 0.26,
+    "fba_fee": 3.91,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00OLSARS2",
+    "title": "Temptations Cat Treats, Classic Crunchy and Soft Cat Treats, Catnip Fever Flavor, Catnip T",
+    "brand": "Temptations",
+    "category": "Crunchy Treats",
+    "sale_price": 8.4,
+    "bsr": 61,
+    "weight_lb": 1.151,
+    "fba_fee": 4.37,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0FPFZ7XFJ",
+    "title": "Veken Innovation Award Winner Stainless Steel Cat Water Fountain, 108oz/3.2L Automatic Pet",
+    "brand": "Veken",
+    "category": "Fountains",
+    "sale_price": 28.2,
+    "bsr": 80,
+    "weight_lb": 2.65,
+    "fba_fee": 6.34,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.4,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 9.91,
+    "max_buy_pct": 35.1
+  },
+  {
+    "asin": "B07DHVDPY7",
+    "title": "Best Pet Supplies Dog Poop Bags for Waste Refuse Cleanup, Doggy Roll Replacements for Outd",
+    "brand": "Best Pet Supplies",
+    "category": "Bags",
+    "sale_price": 6.9,
+    "bsr": 79,
+    "weight_lb": 0.794,
+    "fba_fee": 3.91,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B071FH2NLX",
+    "title": "Greenies Cat Treats, Feline Veterinarian-Recommended Adult Natural Dental Cat Treats, Oven",
+    "brand": "Greenies",
+    "category": "Crunchy Treats",
+    "sale_price": 22.98,
+    "bsr": 64,
+    "weight_lb": 1.541,
+    "fba_fee": 6.02,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00HN089EO",
+    "title": "Purina Friskies Dry Cat Food Seafood Sensations With Salmon, Tuna, and Shrimp Flavors - 22",
+    "brand": "Friskies",
+    "category": "Dry",
+    "sale_price": 19.83,
+    "bsr": 65,
+    "weight_lb": 22.201,
+    "fba_fee": 18.44,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B09DK4MZRC",
+    "title": "Maxpower Planet Pet Grooming Brush - Double-Sided Undercoat Rake for Dogs and Cats, Extra ",
+    "brand": "Maxpower Planet",
+    "category": "Rakes",
+    "sale_price": 10.22,
+    "bsr": 263,
+    "weight_lb": 0.311,
+    "fba_fee": 4.09,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "need to buy at <4% of sale - tough"
+    ],
+    "status": "very_aggressive_target",
+    "max_buy_price": 0.39,
+    "max_buy_pct": 3.8
+  },
+  {
+    "asin": "B0777J8V5J",
+    "title": "Purina Friskies Gravy Wet Cat Food Variety Pack, Surfin\u2019 and Turfin\u2019 Prime Filets Favorite",
+    "brand": "Friskies",
+    "category": "Canned",
+    "sale_price": 32.76,
+    "bsr": 60,
+    "weight_lb": 15.719,
+    "fba_fee": 11.44,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B003CL3PTM",
+    "title": "Hill's Science Diet Adult 1-6 Small & Mini Dry Dog Food, Chicken & Brown Rice, 4.5 lb. Bag",
+    "brand": "Hill's Science Diet",
+    "category": "Dry",
+    "sale_price": 23.83,
+    "bsr": 62,
+    "weight_lb": 4.61,
+    "fba_fee": 7.79,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B000R4H2MI",
+    "title": "Purina ONE Natural Dry Cat Food, Tender Selects Blend With Real Salmon - 7 lb. Bag",
+    "brand": "Purina ONE",
+    "category": "Dry",
+    "sale_price": 17.46,
+    "bsr": 68,
+    "weight_lb": 7.121,
+    "fba_fee": 12.25,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0CXKHT5K2",
+    "title": "Zesty Paws Wild Alaskan Omega-3 Blend Pollock + Salmon Oil for Dogs and Cats- Skin and Coa",
+    "brand": "Zesty Paws",
+    "category": "Fish Oil Supplements",
+    "sale_price": 29.76,
+    "bsr": 61,
+    "weight_lb": 1.08,
+    "fba_fee": 5.22,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 12.92,
+    "max_buy_pct": 43.4
+  },
+  {
+    "asin": "B0CGJG25PV",
+    "title": "Purina Tidy Cats Free and Clean Unscented Clumping Cat Litter with Odor Control - 38 lb. B",
+    "brand": "Purina Tidy Cats",
+    "category": "Litter",
+    "sale_price": 26.81,
+    "bsr": 70,
+    "weight_lb": 39.346,
+    "fba_fee": 25.12,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07DGYXWX1",
+    "title": "WORLD'S BEST CAT LITTER Multiple Cat Unscented, 15-Pounds - Natural Ingredients, Quick Clu",
+    "brand": "World's Best Cat Litter",
+    "category": "Litter",
+    "sale_price": 18.59,
+    "bsr": 77,
+    "weight_lb": 15.21,
+    "fba_fee": 11.27,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.92,
+    "return_rate": null,
+    "rating": 4.4,
+    "warnings": [
+      "Amazon holds buy box 92% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B004QN0MJQ",
+    "title": "Advantage II Large Cat Vet-Recommended Flea Treatment & Prevention | Cats Over 9 lbs. | 4-",
+    "brand": "Advantage",
+    "category": "Flea Drops",
+    "sale_price": 49.76,
+    "bsr": 80,
+    "weight_lb": 0.071,
+    "fba_fee": 4.13,
+    "fba_sellers": 3,
+    "bb_pct_amazon": 0.73,
+    "return_rate": "Low",
+    "rating": 4.5,
+    "warnings": [],
+    "status": "hazmat_skip"
+  },
+  {
+    "asin": "B073WLPYMP",
+    "title": "Delectables Lickable Treat Stew Wet Cat Treat Variety Pack, Food Topper, Hydrating, Grain-",
+    "brand": "Delectables",
+    "category": "Pouches",
+    "sale_price": 13.49,
+    "bsr": 72,
+    "weight_lb": 1.347,
+    "fba_fee": 5.61,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B09RPL4Z4J",
+    "title": "Pedigree Adult Dry Dog Food, Complete Nutrition, Grilled Steak & Vegetable Flavor, 18 lb. ",
+    "brand": "Pedigree",
+    "category": "Dry",
+    "sale_price": 16.98,
+    "bsr": 83,
+    "weight_lb": 18.276,
+    "fba_fee": 16.57,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0D2FR7XRM",
+    "title": "Purina Tidy Cats Clumping Cat Litter Odor Control, 24/7 Performance Multi Cat Litter - 16 ",
+    "brand": "Purina Tidy Cats",
+    "category": "Litter",
+    "sale_price": 12.5,
+    "bsr": 79,
+    "weight_lb": 16.341,
+    "fba_fee": 11.69,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0DJDNXZYF",
+    "title": "Fresh Step Heavy Duty Odor Block Advanced Multi Cat Clumping Litter with Febreze, 17.5 lb ",
+    "brand": "Fresh Step",
+    "category": "Litter",
+    "sale_price": 17.22,
+    "bsr": 121,
+    "weight_lb": 18.739,
+    "fba_fee": 12.43,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": "Low",
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B09K9FDLFN",
+    "title": "Blue Buffalo Life Protection Formula Chicken & Brown Rice Small Breed Adult Dry Dog Food, ",
+    "brand": "Blue Buffalo",
+    "category": "Dry",
+    "sale_price": 17.48,
+    "bsr": 37,
+    "weight_lb": 5.071,
+    "fba_fee": 7.96,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07DK2BQGF",
+    "title": "Boxie Probiotic Cat Litter, 40 Day Odor Control, Clumping Clay Kitty Litter, Odor Eliminat",
+    "brand": "BoxiePro",
+    "category": "Litter",
+    "sale_price": 23.99,
+    "bsr": 94,
+    "weight_lb": 16.246,
+    "fba_fee": 11.6,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.2,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0CLLPVZRV",
+    "title": "Swihauk Self Cleaning Slicker Brush - Skin Friendly Deshedding Grooming Tool for Dogs & Ca",
+    "brand": "Swihauk",
+    "category": "Brushes",
+    "sale_price": 15.2,
+    "bsr": 182,
+    "weight_lb": 0.489,
+    "fba_fee": 4.35,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 3.99,
+    "max_buy_pct": 26.2
+  },
+  {
+    "asin": "B000FEF10A",
+    "title": "PetSafe ScoopFree Disposable Crystal Cat Litter Tray - Easy Cleaning Box - Refill Tray for",
+    "brand": "PetSafe",
+    "category": "Litter & Housebreaking",
+    "sale_price": 71.03,
+    "bsr": 75,
+    "weight_lb": 18.797,
+    "fba_fee": 15.29,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.86,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 86% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B09M7LCQB6",
+    "title": "Zesty Paws Dog Multivitamin, Chewable Dog Vitamins and Supplements for Hip & Joints, Skin ",
+    "brand": "Zesty Paws",
+    "category": "Multivitamins",
+    "sale_price": 19.85,
+    "bsr": 77,
+    "weight_lb": 0.489,
+    "fba_fee": 4.09,
+    "fba_sellers": 1,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [],
+    "status": "viable",
+    "max_buy_price": 7.99,
+    "max_buy_pct": 40.3
+  },
+  {
+    "asin": "B006W6YHV4",
+    "title": "Greenies Veterinarian-Recommended Natural Dental Dog Treats, Large Size, Original Flavor, ",
+    "brand": "Greenies",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 36.99,
+    "bsr": 98,
+    "weight_lb": 2.76,
+    "fba_fee": 6.9,
+    "fba_sellers": 3,
+    "bb_pct_amazon": 0.99,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 99% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B097S7LP8T",
+    "title": "Pup-Peroni Prime Rib Flavor Dog Treats, 22.5 Oz. Bag",
+    "brand": "Pup-Peroni",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 11.47,
+    "bsr": 69,
+    "weight_lb": 1.459,
+    "fba_fee": 6.48,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B000F4AVPA",
+    "title": "Chuckit! Ultra Ball Dog Toy - Medium Bouncy Fetch Balls For Dogs 20-60 lbs - Made from Dur",
+    "brand": "Chuckit!",
+    "category": "Balls",
+    "sale_price": 8.8,
+    "bsr": 108,
+    "weight_lb": 0.529,
+    "fba_fee": 5.28,
+    "fba_sellers": 4,
+    "bb_pct_amazon": 0.99,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 99% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0GHCP35B9",
+    "title": "Blue Buffalo Tastefuls Natural Tender Morsels Wet Cat Food,Chicken Entr\u00e9e 5.5-oz cans,(Pac",
+    "brand": "Blue Buffalo",
+    "category": "Canned",
+    "sale_price": 63.78,
+    "bsr": 1796,
+    "weight_lb": 18.779,
+    "fba_fee": 12.78,
+    "fba_sellers": null,
+    "bb_pct_amazon": 0.96,
+    "return_rate": null,
+    "rating": 4.4,
+    "warnings": [
+      "Amazon holds buy box 96% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0D1LK2G5C",
+    "title": "Cat's Pride NEW Antibacterial Cat Litter: Destroys 99.9% of Odor-Causing Bacteria - Powerf",
+    "brand": "Cat's Pride",
+    "category": "Litter",
+    "sale_price": 9.48,
+    "bsr": 221,
+    "weight_lb": 12.597,
+    "fba_fee": 9.59,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.99,
+    "return_rate": null,
+    "rating": 4.5,
+    "warnings": [
+      "Amazon holds buy box 99% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0002DK91A",
+    "title": "Kaytee Wild Bird (No Mess or Waste Free) Food Seed Blend For Blue Jays, Woodpeckers, Junco",
+    "brand": "Kaytee",
+    "category": "Food",
+    "sale_price": 12.99,
+    "bsr": 158,
+    "weight_lb": 10.099,
+    "fba_fee": 9.62,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.4,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07QSCFSVH",
+    "title": "Temptations Cat Treats MixUps Surfer's Delight, Tuna, Shrimp, Salmon Flavor, Crunchy and S",
+    "brand": "Temptations",
+    "category": "Crunchy Treats",
+    "sale_price": 15.49,
+    "bsr": 93,
+    "weight_lb": 2.271,
+    "fba_fee": 6.31,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B08294GHXY",
+    "title": "Pedigree Choice Cuts in Gravy Wet Dog Food, Adult Soft Wet Dog Food, Variety Pack, 3.5 oz.",
+    "brand": "Pedigree",
+    "category": "Pouches",
+    "sale_price": 25.97,
+    "bsr": 88,
+    "weight_lb": 7.311,
+    "fba_fee": 8.7,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B08PCHXB7X",
+    "title": "SleekEZ Dog Brush, Cat Brush, & Horse Brush | Pet Hair Removal Tool | Dog Grooming Kit & P",
+    "brand": "SleekEZ",
+    "category": "Shedding Tools",
+    "sale_price": null,
+    "bsr": 125,
+    "weight_lb": 1.041,
+    "fba_fee": 6.03,
+    "fba_sellers": null,
+    "bb_pct_amazon": null,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [],
+    "status": "incomplete_data"
+  },
+  {
+    "asin": "B005CUTWDE",
+    "title": "Wahl USA Dry Skin & Itch Relief Pet Shampoo for Dogs \u2013 Oatmeal Formula with Coconut Lime V",
+    "brand": "Wahl",
+    "category": "Shampoos",
+    "sale_price": 8.33,
+    "bsr": 126,
+    "weight_lb": 1.7,
+    "fba_fee": 4.92,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": "Low",
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07JG87X5P",
+    "title": "Purina Fancy Feast Tender Ocean Whitefish, Turkey, Chicken and Salmon Feasts Wet Kitten Fo",
+    "brand": "Fancy Feast",
+    "category": "Canned",
+    "sale_price": 22.86,
+    "bsr": 157,
+    "weight_lb": 5.269,
+    "fba_fee": 8.04,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B001650OE0",
+    "title": "Purina Pro Plan Veterinary Supplements FortiFlora Daily Probiotics for Cats for Digestive ",
+    "brand": "Pro Plan Veterinary Diets",
+    "category": "Probiotics",
+    "sale_price": 30.99,
+    "bsr": 118,
+    "weight_lb": 0.141,
+    "fba_fee": 3.86,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B00JT3TP1O",
+    "title": "Purina Fancy Feast Seafood Classic Pate Collection Grain Free Wet Cat Food Variety Pack - ",
+    "brand": "Fancy Feast",
+    "category": "Canned",
+    "sale_price": 28.06,
+    "bsr": 96,
+    "weight_lb": 6.601,
+    "fba_fee": 8.46,
+    "fba_sellers": 2,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0777NRJ2N",
+    "title": "Purina Friskies Pate Wet Cat Food Variety Pack Seafood and Chicken Pate Favorites 40ct VP ",
+    "brand": "Friskies",
+    "category": "Canned",
+    "sale_price": 32.76,
+    "bsr": 113,
+    "weight_lb": 15.651,
+    "fba_fee": 11.44,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B01EY9KQ2Y",
+    "title": "Purina Pro Plan Sensitive Skin and Stomach Dog Food Dry, Adult Salmon & Rice Formula, Dige",
+    "brand": "Purina Pro Plan",
+    "category": "Dry",
+    "sale_price": 77.46,
+    "bsr": 91,
+    "weight_lb": 30.651,
+    "fba_fee": 22.21,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.6,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B006FTJ0NI",
+    "title": "Purina Friskies Wet Cat Food Variety Pack, Tasty Treasures Prime Filets (With Ocean Fish a",
+    "brand": "Friskies",
+    "category": "Canned",
+    "sale_price": 10.07,
+    "bsr": 108,
+    "weight_lb": 4.72,
+    "fba_fee": 7.79,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B07M6237KJ",
+    "title": "Milk-Bone Brushing Chews Original Chicken Flavor Daily Dental Dog Treats, Large, 33.7 Oz. ",
+    "brand": "Milk-Bone",
+    "category": "Cookies, Biscuits & Snacks",
+    "sale_price": 14.98,
+    "bsr": 97,
+    "weight_lb": 2.258,
+    "fba_fee": 6.9,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 1.0,
+    "return_rate": null,
+    "rating": 4.7,
+    "warnings": [
+      "Amazon holds buy box 100% of time"
+    ],
+    "status": "amazon_owns_bb"
+  },
+  {
+    "asin": "B0G5RZQPM8",
+    "title": "Hill's Science Diet Adult Sensitive Stomach & Sensitive Skin Dry Dog Food, Salmon, 12 lb. ",
+    "brand": "Hill's Science Diet",
+    "category": "Dry",
+    "sale_price": 50.43,
+    "bsr": 102,
+    "weight_lb": 12.05,
+    "fba_fee": 14.21,
+    "fba_sellers": 1,
+    "bb_pct_amazon": 0.92,
+    "return_rate": null,
+    "rating": 4.8,
+    "warnings": [
+      "Amazon holds buy box 92% of time"
+    ],
+    "status": "amazon_owns_bb"
+  }
+]
