@@ -10,3 +10,5 @@ __pycache__/
 refresh.json
 refresh_report.md
 claude_report.md
+gemini_deals.json
+gemini_report.md
