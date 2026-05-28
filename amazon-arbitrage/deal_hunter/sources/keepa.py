@@ -13,6 +13,8 @@ Endpoints used:
 Token budget on basic plan: ~60,000/month. Plenty for 1,000+ analyses.
 """
 
+import gzip
+import io
 import json
 import os
 import re
@@ -20,6 +22,7 @@ import time
 import urllib.parse
 import urllib.request
 import urllib.error
+import zlib
 from dataclasses import dataclass
 from typing import List, Optional, Tuple
 
@@ -114,12 +117,28 @@ class KeepaClient:
         self._throttle()
         params["key"] = self.api_key
         url = f"{KEEPA_BASE}{path}?{urllib.parse.urlencode(params)}"
+        req = urllib.request.Request(url, headers={
+            "Accept-Encoding": "gzip, deflate",
+            "User-Agent": "deal-hunter/1.0",
+        })
         try:
-            with urllib.request.urlopen(url, timeout=DEFAULT_TIMEOUT) as r:
-                data = json.loads(r.read().decode("utf-8"))
+            with urllib.request.urlopen(req, timeout=DEFAULT_TIMEOUT) as r:
+                raw = r.read()
+                encoding = (r.headers.get("Content-Encoding") or "").lower()
+                if encoding == "gzip":
+                    raw = gzip.decompress(raw)
+                elif encoding == "deflate":
+                    raw = zlib.decompress(raw)
+                data = json.loads(raw.decode("utf-8"))
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", errors="replace")[:300]
-            raise KeepaError(f"HTTP {e.code} from Keepa: {body}")
+            body = e.read()
+            try:
+                if (e.headers.get("Content-Encoding") or "").lower() == "gzip":
+                    body = gzip.decompress(body)
+            except Exception:
+                pass
+            body_str = body.decode("utf-8", errors="replace")[:300]
+            raise KeepaError(f"HTTP {e.code} from Keepa: {body_str}")
         except urllib.error.URLError as e:
             raise KeepaError(f"Network error reaching Keepa: {e.reason}")
 
