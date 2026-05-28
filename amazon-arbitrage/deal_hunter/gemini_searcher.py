@@ -32,7 +32,7 @@ import os
 import random
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -68,13 +68,33 @@ if it surfaces what you need.
 
 Avoid: AliExpress, Temu, Wish, eBay individual sellers, Facebook Marketplace.
 
-# Strict rules
+# Strict rules - violations have caused account suspensions
 
-1. Only return deals where price <= Max Buy. Skip products that exceed Max Buy.
-2. Verify brand and pack size match. A 6-pack at the source must match a 6-pack on Amazon.
-3. Never fabricate prices. If Google Search didn't find a real listing, skip that product.
-4. US shipping required (user is in Virginia). Skip pickup-only deals from chains >30 miles away.
-5. Note stock status - skip clearly out-of-stock listings.
+1. **EXACT BRAND MATCH ONLY.** If the target says brand "Funscape" and you find a similar
+   product made by "iPlay iLearn", that is NOT the same product. Different brand =
+   different listing = different ASIN = SKIP. Customers receiving the wrong-brand
+   product will return it and report the seller, leading to Amazon account suspension.
+   The brand on the deal page must match the brand on the target list character-for-character
+   (ignoring case).
+
+2. **MINIMUM MARGIN.** Only return deals where deal_price <= (Max Buy - $1.00). A margin
+   of pennies between deal_price and Max Buy is not a real opportunity - one return or
+   price drop wipes it out. If price is within $1 of Max Buy, skip it.
+
+3. **EXACT PACK SIZE.** A 6-pack at the source must match a 6-pack on Amazon. A single
+   item where Amazon sells a multipack is NOT a match. Read the Amazon listing's count.
+
+4. **Never fabricate prices.** If Google Search didn't surface a real product page with
+   a real current price, skip that product. Do not estimate or guess.
+
+5. **US shipping required** (user is in Virginia). Skip pickup-only deals from chains
+   not within 30 miles of Christiansburg, VA (24073). Major chains with national shipping
+   are fine.
+
+6. **In-stock only.** Skip out-of-stock or "limited stock - notify me" listings.
+
+7. **When in doubt, skip.** Returning nothing is far better than returning a wrong match.
+   The user's time and Amazon account are worth more than any single deal.
 
 # Output format
 
@@ -319,7 +339,7 @@ def convert_to_hunter_format(deals: List[dict]) -> List[dict]:
             "retailer": d.get("retailer"),
             "url": d.get("url") or f"gemini://no-url/{d.get('asin', '?')}",
             "description": f"[Gemini {d.get('confidence', '?')} conf] {d.get('notes', '')}",
-            "posted_at": datetime.utcnow().isoformat() + "Z",
+            "posted_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
             "_gemini_asin": d.get("asin"),
             "_gemini_in_stock": d.get("in_stock", True),
             "_gemini_confidence": d.get("confidence"),
