@@ -183,6 +183,27 @@ class KeepaClient:
             return None
         return self._parse_product(products[0])
 
+    def products_bulk(self, asins: List[str], days: int = 90) -> List["KeepaProduct"]:
+        """
+        Fetch multiple ASINs in one call. Keepa accepts up to 100 comma-separated
+        ASINs per /product request. More token-efficient than calling once per ASIN.
+        """
+        if not asins:
+            return []
+        data = self._get("/product", {
+            "domain": DOMAIN_US,
+            "asin": ",".join(asins),
+            "stats": days,
+        })
+        products = data.get("products") or []
+        parsed = []
+        for p in products:
+            try:
+                parsed.append(self._parse_product(p))
+            except Exception as e:
+                print(f"  [keepa] failed to parse product: {e}")
+        return parsed
+
     def _parse_product(self, p: dict) -> KeepaProduct:
         stats = p.get("stats") or {}
         current = stats.get("current") or []
