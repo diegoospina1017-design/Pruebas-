@@ -32,6 +32,7 @@ from sources import slickdeals
 from filters import filter_deals
 from analyzer import analyze_all
 from report import render
+from target_matcher import load_targets, attach_target_matches
 
 try:
     from sources.keepa import KeepaClient, KeepaError
@@ -105,11 +106,26 @@ def main():
 
     keepa = setup_keepa(args.no_keepa)
 
+    targets = load_targets(HERE)
+    print(f"[targets] {len(targets)} viable sourcing targets loaded")
+
     raw_deals = fetch_deals(args.offline, args.sample)
     print(f"[fetch] {len(raw_deals)} raw deals")
 
+    if targets:
+        attach_target_matches(raw_deals, targets)
+        matched = sum(1 for d in raw_deals if d.get("_target_match"))
+        hot = sum(1 for d in raw_deals if d.get("_target_match", {}).get("is_hot_buy"))
+        print(f"[targets] {matched} deals matched a known target, {hot} are HOT BUYS")
+
     survivors = filter_deals(raw_deals, config)
     print(f"[filter] {len(survivors)} deals passed rules")
+
+    survivor_urls = {d.get("url") for d in survivors}
+    for d in raw_deals:
+        if d.get("_target_match", {}).get("is_hot_buy") and d.get("url") not in survivor_urls:
+            survivors.insert(0, d)
+            survivor_urls.add(d.get("url"))
 
     analyzed = analyze_all(survivors, asin_map, keepa=keepa)
     analyzed_count = sum(1 for d in analyzed if d.get("_analysis", {}).get("status") == "analyzed")

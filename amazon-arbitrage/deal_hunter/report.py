@@ -19,21 +19,85 @@ def _profit_icon(rec: str) -> str:
 def render(deals: List[dict], top_n: int = 15) -> str:
     now = datetime.now().strftime("%Y-%m-%d %H:%M")
 
+    hot_buys = [d for d in deals if d.get("_target_match", {}).get("is_hot_buy")]
+    target_matches = [d for d in deals if d.get("_target_match") and not d.get("_target_match", {}).get("is_hot_buy")]
     analyzed = [d for d in deals if d.get("_analysis", {}).get("status") == "analyzed"]
     pending = [d for d in deals if d.get("_analysis", {}).get("status") == "needs_amazon_lookup"]
 
     analyzed.sort(key=lambda d: d["_analysis"]["net_profit"], reverse=True)
     pending.sort(key=lambda d: d.get("_score", 0), reverse=True)
+    hot_buys.sort(key=lambda d: d["_target_match"]["margin_vs_max"], reverse=True)
+    target_matches.sort(key=lambda d: -d["_target_match"]["margin_vs_max"])
 
     lines = [
         f"# Deal Hunter Report",
         f"_Generated {now}_",
         "",
+        f"- HOT BUYS (deal price <= your max buy on a known target): **{len(hot_buys)}**",
+        f"- Target matches (above max buy, but still relevant): **{len(target_matches)}**",
         f"- Total candidates after filtering: **{len(deals)}**",
         f"- Fully analyzed (with Amazon data): **{len(analyzed)}**",
         f"- Pending Amazon lookup: **{len(pending)}**",
         "",
     ]
+
+    if hot_buys:
+        lines += [
+            "## HOT BUYS - Buy these now",
+            "",
+            "These Slickdeals deals match a product in your sourcing target lists AND",
+            "are priced at or below your max buy price. High-confidence buys.",
+            "",
+            "| # | Title | Retailer | Deal $ | Max Buy | Margin | Amazon $ | BSR | Matched ASIN |",
+            "|---|-------|----------|-------:|--------:|-------:|---------:|----:|--------------|",
+        ]
+        for i, d in enumerate(hot_buys[:20], 1):
+            m = d["_target_match"]
+            bsr = f"{m['target_bsr']:,}" if m.get("target_bsr") else "?"
+            lines.append(
+                f"| {i} | {d['title'][:55]} "
+                f"| {d.get('retailer') or '?'} "
+                f"| **${d['deal_price']:.2f}** "
+                f"| ${m['target_max_buy']:.2f} "
+                f"| +${m['margin_vs_max']:.2f} "
+                f"| ${m['target_amazon_price']:.2f} | {bsr} "
+                f"| `{m['target_asin']}` |"
+            )
+        lines.append("")
+        lines.append("### Why these are hot buys")
+        for i, d in enumerate(hot_buys[:5], 1):
+            m = d["_target_match"]
+            lines.extend([
+                f"\n**{i}. {d['title']}**",
+                f"- Deal: ${d['deal_price']:.2f} at {d.get('retailer') or '?'} ({d.get('discount_pct', 0):.0f}% off)",
+                f"- Matched target: `{m['target_asin']}` ({m['target_brand']}) - {m['target_title']}",
+                f"- Your max buy was ${m['target_max_buy']:.2f}, this is ${m['margin_vs_max']:.2f} below",
+                f"- Sells on Amazon at ${m['target_amazon_price']:.2f} | BSR {m['target_bsr']} | FBA sellers {m['target_fba_sellers']}",
+                f"- Match confidence: {m['match_score']}/100 from {m['target_source']} list",
+                f"- Deal link: {d['url']}",
+            ])
+        lines.append("")
+
+    if target_matches:
+        lines += [
+            "## Target matches (above max buy)",
+            "",
+            "These deals match a known sourcing target but the deal price is still",
+            "higher than your max buy. Worth tracking in case price drops further.",
+            "",
+            "| # | Title | Retailer | Deal $ | Max Buy | Over by | Matched ASIN |",
+            "|---|-------|----------|-------:|--------:|--------:|--------------|",
+        ]
+        for i, d in enumerate(target_matches[:10], 1):
+            m = d["_target_match"]
+            lines.append(
+                f"| {i} | {d['title'][:55]} "
+                f"| {d.get('retailer') or '?'} "
+                f"| ${d['deal_price']:.2f} | ${m['target_max_buy']:.2f} "
+                f"| ${-m['margin_vs_max']:.2f} "
+                f"| `{m['target_asin']}` |"
+            )
+        lines.append("")
 
     if analyzed:
         lines.append("## Fully analyzed (ranked by net profit)")
