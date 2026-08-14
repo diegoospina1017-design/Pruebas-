@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/session-start-bootstrap.js\"",
+            "timeout": 15
+          }
+        ],
+        "description": "ECC (safe): load previous context and detect package manager on new session",
+        "id": "ecc-safe:session:start"
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/run-with-flags.js\" pre:compact \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/pre-compact.js\" standard",
+            "timeout": 20
+          }
+        ],
+        "description": "ECC (safe): save session state before context compaction",
+        "id": "ecc-safe:pre:compact"
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/run-with-flags.js\" pre:observe \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/observe-runner.js\" standard",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "ECC (safe): capture tool-use observations for continuous learning (non-blocking)",
+        "id": "ecc-safe:pre:observe"
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/run-with-flags.js\" stop:session-end \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/session-end.js\" standard",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "ECC (safe): persist session state after each response",
+        "id": "ecc-safe:stop:session-end"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/run-with-flags.js\" stop:cost-tracker \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/cost-tracker.js\" standard",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "ECC (safe): track token and cost metrics per session",
+        "id": "ecc-safe:stop:cost-tracker"
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/run-with-flags.js\" stop:evaluate-session \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/evaluate-session.js\" standard",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "ECC (safe): evaluate session for extractable patterns (non-blocking)",
+        "id": "ecc-safe:stop:evaluate-session"
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "CLAUDE_PLUGIN_ROOT=\"$CLAUDE_PROJECT_DIR/.claude/ecc\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/plugin-hook-bootstrap.js\" node \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/run-with-flags.js\" session:end:marker \"$CLAUDE_PROJECT_DIR/.claude/ecc/scripts/hooks/session-end-marker.js\" standard",
+            "async": true,
+            "timeout": 10
+          }
+        ],
+        "description": "ECC (safe): session end lifecycle marker (non-blocking)",
+        "id": "ecc-safe:session:end:marker"
+      }
+    ]
+  }
+}
